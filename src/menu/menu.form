@@ -113,7 +113,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem14">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Copia de seguridad"/>
+                <Property name="text" type="java.lang.String" value="bkp de seguridad"/>
               </Properties>
             </MenuItem>
           </SubComponents>

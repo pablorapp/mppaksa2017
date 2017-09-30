@@ -127,7 +127,7 @@ public class menu extends javax.swing.JFrame {
         });
         jMenu4.add(jMenuItem13);
 
-        jMenuItem14.setText("Copia de seguridad");
+        jMenuItem14.setText("bkp de seguridad");
         jMenu4.add(jMenuItem14);
 
         jMenuBar1.add(jMenu4);
