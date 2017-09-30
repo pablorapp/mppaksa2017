@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package paksa;
+package programas;
 
 /**
  *
  * @author Pablo
  */
-public class Paksa {
+public class Main {
 
     /**
      * @param args the command line arguments

@@ -5,6 +5,7 @@
  */
 package formularios;
 
+import controladores.UsuariosControlador;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
 
@@ -118,7 +119,10 @@ public class acceso extends javax.swing.JFrame {
         }else{
             String usu = txtUsu.getText();
             String pass = new String(txtPass.getPassword());
-            
+            if(UsuariosControlador.recUsuario(usu, pass)){
+                //new menu().setVisible(true);
+                this.setVisible(false);
+            }
         }
     }//GEN-LAST:event_btnIngresarActionPerformed
 

@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 public class Conexion {
     String url = "jdbc:postgresql://localhost:5432/paksa";
     public static Connection  conn;
+    public Connection con;
     public Conexion(){
             try {
                 if(conn!=null){
@@ -29,7 +30,7 @@ public class Conexion {
                     Class.forName("org.postgresql.Driver");
                     conn = DriverManager.getConnection(url,  "postgres", "123");
                 }
-                
+                con = conn;
             } catch (SQLException e) {
                 System.out.println("Ocurrio un error : "+e.getMessage());
             } catch (ClassNotFoundException ex) {
