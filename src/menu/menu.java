@@ -5,6 +5,8 @@
  */
 package menu;
 
+import javax.swing.ImageIcon;
+
 /**
  *
  * @author Pablo
@@ -16,6 +18,9 @@ public class menu extends javax.swing.JFrame {
      */
     public menu() {
         initComponents();
+        setIconImage(new ImageIcon("C:/SistemaCT/imagenes/taladro.png").getImage());;
+        this.setExtendedState(menu.MAXIMIZED_BOTH);
+      //  LblFondo.setIcon(new ImageIcon("C:/SistemaCT/imagenes/the-punisher.png"));
     }
 
     /**
