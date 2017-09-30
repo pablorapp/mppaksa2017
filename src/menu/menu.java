@@ -127,7 +127,12 @@ public class menu extends javax.swing.JFrame {
         });
         jMenu4.add(jMenuItem13);
 
-        jMenuItem14.setText("Copia de seguridad");
+        jMenuItem14.setText("Copia de Seguridad");
+        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem14ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem14);
 
         jMenuBar1.add(jMenu4);
@@ -159,6 +164,10 @@ public class menu extends javax.swing.JFrame {
     private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem13ActionPerformed
+
+    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     /**
      * @param args the command line arguments
