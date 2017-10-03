@@ -24,11 +24,11 @@ public class Conexion {
                 if(conn!=null){
                     if(conn.isValid(1000)){
                         Class.forName("org.postgresql.Driver");
-                        conn = DriverManager.getConnection(url,  "postgres", "123");
+                        conn = DriverManager.getConnection(url,  "postgres", "solomauro");                    
                     }
                 }else{
                     Class.forName("org.postgresql.Driver");
-                    conn = DriverManager.getConnection(url,  "postgres", "123");
+                    conn = DriverManager.getConnection(url,  "postgres", "solomauro");
                 }
                 con = conn;
             } catch (SQLException e) {
