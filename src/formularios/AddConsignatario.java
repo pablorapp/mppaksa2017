@@ -5,7 +5,10 @@
  */
 package formularios;
 
+import controladores.TarifasControlador;
 import java.awt.Frame;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,18 +18,30 @@ public class AddConsignatario extends javax.swing.JFrame {
 
     /**
      * Creates new form AddConsignatario
+     * @param parent
+     * @param modal
+     * @param modo
      */
-    public AddConsignatario(java.awt.Frame parent, boolean modal,String modo) {
+    public AddConsignatario(java.awt.Frame parent, boolean modal,String modo) throws SQLException {
         initComponents();
         setLocationRelativeTo(null);
-        if(modo=="INS"){
+        if("INS".equals(modo)){
             titulo.setText("Ingresar Consignatario");
         }else{
             titulo.setText("Modificar Consignatario");
         }
+        llenarCB();
     }
 
 
+    private void llenarCB() throws SQLException{
+        combobox.removeAllItems(); 
+        ArrayList<String> resultat;
+        resultat = TarifasControlador.consulta();
+        for(int i=0; i<resultat.size();i++){
+            combobox.addItem(resultat.get(i));
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -50,7 +65,7 @@ public class AddConsignatario extends javax.swing.JFrame {
         txttel = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        combobox = new javax.swing.JComboBox<>();
         txtabr = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -87,7 +102,7 @@ public class AddConsignatario extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Leelawadee UI", 1, 14)); // NOI18N
         jButton2.setText("Confirmar");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        combobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -120,7 +135,7 @@ public class AddConsignatario extends javax.swing.JFrame {
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(txtruc, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(txttel, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(combobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGap(0, 150, Short.MAX_VALUE))))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -153,7 +168,7 @@ public class AddConsignatario extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(combobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -177,9 +192,9 @@ public class AddConsignatario extends javax.swing.JFrame {
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> combobox;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
