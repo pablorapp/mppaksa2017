@@ -18,11 +18,8 @@ public class ConsignatariosControlador {
     public static ResultSet consultaLista() throws SQLException {
         String seleccion = "SELECT cnruc,cnnombre,cndireccion,cntelefono,cncodcab,cncodtar from Consignatario order by cnnombre ";
         Conexion con = new Conexion();
-
         PreparedStatement ps = con.con.prepareStatement(seleccion);
-
         ResultSet rs = ps.executeQuery();
-
         return rs;
     }
     

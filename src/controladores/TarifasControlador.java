@@ -20,11 +20,8 @@ public class TarifasControlador {
     public static ResultSet consultaLista() throws SQLException {
         String seleccion = "SELECT tt_cod_cab, tt_codigo, tt_tarifa1, tt_tarifa2, tt_tarifa3, tt_observ, tt_abrevia, tt_des_for, tt_des_fob, tt_agrupar, tt_con_fec, usuar_oper FROM tarifa order by tt_cod_cab,tt_codigo";
         Conexion con = new Conexion();
-
         PreparedStatement ps = con.con.prepareStatement(seleccion);
-
         ResultSet rs = ps.executeQuery();
-
         return rs;
     }    
     
@@ -33,9 +30,7 @@ public class TarifasControlador {
         String seleccion = "SELECT tt_cod_cab, tt_codigo FROM tarifa order by tt_cod_cab,tt_codigo";
         PreparedStatement ps = con.con.prepareStatement(seleccion);
         ArrayList<String> ls = new ArrayList<>();
-
         ResultSet rs = ps.executeQuery();
-
         while(rs.next()){
             ls.add(rs.getString("tt_cod_cab")+"-"+rs.getString("tt_codigo"));
         }
