@@ -5,18 +5,23 @@
  */
 package formularios;
 
+import controladores.ConsignatariosControlador;
 import controladores.TarifasControlador;
 import java.awt.Frame;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
+import modelos.Consignatarios;
+import programas.Formato;
 
 /**
  *
  * @author Mauro
  */
 public class AddConsignatario extends javax.swing.JFrame {
-
+    String mode;
+    String usuario;
     /**
      * Creates new form AddConsignatario
      * @param parent
@@ -24,15 +29,18 @@ public class AddConsignatario extends javax.swing.JFrame {
      * @param modo
      * @throws java.sql.SQLException
      */
-    public AddConsignatario(java.awt.Frame parent, boolean modal,String modo) throws SQLException {
+    public AddConsignatario(java.awt.Frame parent, boolean modal,String modo,String codigo,String usu) throws SQLException {
         initComponents();
         setLocationRelativeTo(null);
+        mode = modo;
+        usuario = usu;
         if("INS".equals(modo)){
-            titulo.setText("Ingresar Consignatario");
+            titulo.setText("Ingresar Consignatario");                       
         }else{
             titulo.setText("Modificar Consignatario");
         }
-        llenarCB();
+        llenarCB();         
+         
     }
 
 
@@ -42,6 +50,9 @@ public class AddConsignatario extends javax.swing.JFrame {
         resultat = TarifasControlador.consulta();
         for(int i=0; i<resultat.size();i++){
             combobox.addItem(resultat.get(i));
+        }
+        if("UPD".equals(mode)){
+            
         }
     }
 
@@ -67,6 +78,9 @@ public class AddConsignatario extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         combobox = new javax.swing.JComboBox<>();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        txtabr = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -106,6 +120,9 @@ public class AddConsignatario extends javax.swing.JFrame {
 
         combobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        jLabel9.setFont(new java.awt.Font("Leelawadee UI", 1, 14)); // NOI18N
+        jLabel9.setText("Abreviatura");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -121,19 +138,23 @@ public class AddConsignatario extends javax.swing.JFrame {
                             .addComponent(jLabel2)
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
-                            .addComponent(jLabel8))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel9))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtnom)
                             .addComponent(txtdir)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(combobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtruc, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txttel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 157, Short.MAX_VALUE))))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(combobox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtruc, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                                        .addComponent(txttel, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
+                                    .addComponent(txtabr, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel5))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 243, Short.MAX_VALUE)
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
@@ -165,10 +186,16 @@ public class AddConsignatario extends javax.swing.JFrame {
                     .addComponent(jLabel8)
                     .addComponent(combobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel9)
+                        .addComponent(txtabr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -187,9 +214,38 @@ public class AddConsignatario extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Ingrese la direccion");
         }else if(txttel.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Ingrese un No. de telefono");
+        }else{            
+            String ruc = txtruc.getText();
+            String nombre = txtnom.getText();
+            String dir = txtdir.getText();
+            String tel = txttel.getText();
+            String abrevia = txtabr.getText();
+            Object option = combobox.getSelectedItem();
+            String selected = option.toString();
+            String fecha = Formato.FechaHoy2();        
+            int codcab = Integer.parseInt(selected.substring(0, 1));
+            int codtar = Integer.parseInt(selected.substring(2, 3));
+            Consignatarios cng = new Consignatarios(0,nombre,abrevia,dir,tel,ruc,usuario,fecha,"00:00","M",codcab,codtar,0,0);
+            if("INS".equals(mode)){
+                String res = ConsignatariosControlador.adConsig(cng);
+                if(!res.equals("")){
+                    JOptionPane.showMessageDialog(null, res);
+                }else{
+                    limpiar();
+                }
+            } else {
+            }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void limpiar(){
+            txtruc.setText("");
+            txtnom.setText("");
+            txtdir.setText("");
+            txttel.setText("");
+            txtabr.setText("");        
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -202,8 +258,11 @@ public class AddConsignatario extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel titulo;
+    private javax.swing.JTextField txtabr;
     private javax.swing.JTextField txtdir;
     private javax.swing.JTextField txtnom;
     private javax.swing.JTextField txtruc;

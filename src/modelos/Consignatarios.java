@@ -24,9 +24,10 @@ public class Consignatarios {
     int cncodcab;
     int cncodtar;
     int cncodmer;
+    int consig_id;
     
     public Consignatarios(int cncodigo,String cnnombre,String cnabrevia,String cndireccion,String cntelefono,String cnruc,
-            String cnusuario,String cnfecent,String cnhoraent,String cnoperacion,int cncodcab,int cncodtar,int cncodmer){
+            String cnusuario,String cnfecent,String cnhoraent,String cnoperacion,int cncodcab,int cncodtar,int cncodmer,int consig_id){
         this.cncodigo = cncodigo;
         this.cnnombre = cnnombre;
         this.cnabrevia = cnabrevia;
@@ -40,6 +41,11 @@ public class Consignatarios {
         this.cncodcab = cncodcab;
         this.cncodtar = cncodtar;
         this.cncodmer = cncodmer;
+        this.consig_id = consig_id;
+    }
+
+    public Consignatarios() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public int getCncodigo() {
@@ -144,6 +150,14 @@ public class Consignatarios {
 
     public void setCncodmer(int cncodmer) {
         this.cncodmer = cncodmer;
+    }
+
+    public int getConsig_id() {
+        return consig_id;
+    }
+
+    public void setConsig_id(int consig_id) {
+        this.consig_id = consig_id;
     }
     
     

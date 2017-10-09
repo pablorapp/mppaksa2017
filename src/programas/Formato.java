@@ -306,6 +306,29 @@ public class Formato {
         return fecha;
     }
     
+    public static String FechaHoy2(){
+        String fecha;
+        Calendar c2 = new GregorianCalendar();
+        String dia;
+        String mes;
+        String ano;
+        int uno = c2.get(Calendar.DAY_OF_MONTH);
+        int dos = c2.get(Calendar.MONTH) + 1;
+        if(uno<10){
+            dia = "0"+c2.get(Calendar.DAY_OF_MONTH);
+        }else{
+            dia = c2.get(Calendar.DAY_OF_MONTH)+"";
+        }
+        if(dos<10){
+            mes = "0"+(c2.get(Calendar.MONTH) + 1);
+        }else{
+            mes = ""+(c2.get(Calendar.MONTH) + 1);
+        }
+        ano = c2.get(Calendar.YEAR)+"";
+        fecha = ano+"-"+mes+"-"+dia;
+        return fecha;
+    }
+    
     
     public static String ImporteALetras(String importe){
         String textImp="";

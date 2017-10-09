@@ -14,14 +14,15 @@ import javax.swing.ImageIcon;
  * @author Pablo
  */
 public class menu extends javax.swing.JFrame {
-
+    String usuario;
     /**
      * Creates new form menu
      */
-    public menu() {
+    public menu(String usu) {
         initComponents();
         setIconImage(new ImageIcon("C:/SistemaCT/imagenes/taladro.png").getImage());;
         this.setExtendedState(menu.MAXIMIZED_BOTH);
+        usuario = usu;
       //  LblFondo.setIcon(new ImageIcon("C:/SistemaCT/imagenes/the-punisher.png"));
     }
 
@@ -182,7 +183,7 @@ public class menu extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        new ConsignatariosList().setVisible(true);
+        new ConsignatariosList(usuario).setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
@@ -219,7 +220,7 @@ public class menu extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new menu().setVisible(true);
+                new menu("").setVisible(true);
             }
         });
     }

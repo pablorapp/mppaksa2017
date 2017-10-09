@@ -164,7 +164,7 @@ public class acceso extends javax.swing.JFrame {
             String usu = txtUsu.getText();
             String pass = new String(txtPass.getPassword());
             if(UsuariosControlador.recUsuario(usu, pass)){
-                new menu().setVisible(true);
+                new menu(usu).setVisible(true);
                 this.setVisible(false);
             }else{
                 new NewUsuario().setVisible(true);

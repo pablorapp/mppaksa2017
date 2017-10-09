@@ -22,18 +22,21 @@ public class ConsignatariosList extends javax.swing.JFrame {
 
     DefaultTableModel modelo;
     String modo;
+    String usuario;
     /**
      * Creates new form ConsignatariosList
      */
-    public ConsignatariosList() {
+    public ConsignatariosList(String usu) {
         initComponents();
         setLocationRelativeTo(null);
         modelo = new DefaultTableModel();
+        usuario = usu;
         getColumnas();
         setFilas();     
     }
     
         private void getColumnas() {
+        modelo.addColumn("Id");
         modelo.addColumn("RUC");
         modelo.addColumn("Nombre");
         modelo.addColumn("Dirección");
@@ -42,16 +45,17 @@ public class ConsignatariosList extends javax.swing.JFrame {
         }       
         
         private void setFilas(){
-            String []Registros= new String[5];
+            String []Registros= new String[6];
             try {
                 
                 ResultSet rs = ConsignatariosControlador.consultaLista();
                 while(rs.next()){
-                        Registros[0]=rs.getString("cnruc");  
-                        Registros[1]=rs.getString("cnnombre");  
-                        Registros[2]=rs.getString("cndireccion");  
-                        Registros[3]=rs.getString("cntelefono");  
-                        Registros[4]=rs.getInt("cncodcab")+"-"+rs.getInt("cncodtar");
+                        Registros[0]=rs.getString("consig_id");  
+                        Registros[1]=rs.getString("cnruc");  
+                        Registros[2]=rs.getString("cnnombre");  
+                        Registros[3]=rs.getString("cndireccion");  
+                        Registros[4]=rs.getString("cntelefono");  
+                        Registros[5]=rs.getInt("cncodcab")+"-"+rs.getInt("cncodtar");
                         modelo.addRow(Registros);                    
                 }
                 
@@ -59,11 +63,12 @@ public class ConsignatariosList extends javax.swing.JFrame {
                 Logger.getLogger(ConsignatariosList.class.getName()).log(Level.SEVERE, null, ex);
             }           
             tbConsignatario.setModel(modelo);  
-            tbConsignatario.getColumnModel().getColumn(0).setPreferredWidth(130);
-            tbConsignatario.getColumnModel().getColumn(1).setPreferredWidth(280);
+            tbConsignatario.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tbConsignatario.getColumnModel().getColumn(1).setPreferredWidth(130);
             tbConsignatario.getColumnModel().getColumn(2).setPreferredWidth(280);
-            tbConsignatario.getColumnModel().getColumn(3).setPreferredWidth(130);
-            tbConsignatario.getColumnModel().getColumn(4).setPreferredWidth(130);            
+            tbConsignatario.getColumnModel().getColumn(3).setPreferredWidth(280);
+            tbConsignatario.getColumnModel().getColumn(4).setPreferredWidth(130);
+            tbConsignatario.getColumnModel().getColumn(5).setPreferredWidth(130);            
         }
         
 
@@ -124,6 +129,11 @@ public class ConsignatariosList extends javax.swing.JFrame {
         });
 
         modicn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/document_edit.png"))); // NOI18N
+        modicn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modicnActionPerformed(evt);
+            }
+        });
 
         elicn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/document_delete.png"))); // NOI18N
 
@@ -167,11 +177,11 @@ public class ConsignatariosList extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(newcn)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(newcn, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(modicn)
                     .addComponent(elicn)
-                    .addComponent(imprimir)
+                    .addComponent(imprimir, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -194,7 +204,7 @@ public class ConsignatariosList extends javax.swing.JFrame {
     private void newcnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newcnActionPerformed
         modo = "INS";
         try {
-            new AddConsignatario(this,true,modo).setVisible(true);
+            new AddConsignatario(this,true,modo,"",usuario).setVisible(true);
         } catch (SQLException ex) {
             Logger.getLogger(ConsignatariosList.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -203,6 +213,16 @@ public class ConsignatariosList extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void modicnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modicnActionPerformed
+        modo = "UPD";
+        String cod = tbConsignatario.getValueAt(tbConsignatario.getSelectedRow(),0).toString();
+        try {
+            new AddConsignatario(this,true,modo,cod,usuario).setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(ConsignatariosList.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+    }//GEN-LAST:event_modicnActionPerformed
 
 //    /**
 //     * @param args the command line arguments
