@@ -8,11 +8,15 @@ package formularios;
 import controladores.ConsignatariosControlador;
 import controladores.TarifasControlador;
 import java.awt.Frame;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import modelos.Consignatarios;
+import programas.Conexion;
 import programas.Formato;
 
 /**
@@ -22,6 +26,7 @@ import programas.Formato;
 public class AddConsignatario extends javax.swing.JFrame {
     String mode;
     String usuario;
+    int codCons;
     /**
      * Creates new form AddConsignatario
      * @param parent
@@ -34,10 +39,17 @@ public class AddConsignatario extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         mode = modo;
         usuario = usu;
+        codCons = Integer.parseInt(codigo);
         if("INS".equals(modo)){
             titulo.setText("Ingresar Consignatario");                       
         }else{
             titulo.setText("Modificar Consignatario");
+            Consignatarios cng = ConsignatariosControlador.recConsig(codCons);
+            txtruc.setText(cng.getCnruc());
+            txtnom.setText(cng.getCnnombre());
+            txtdir.setText(cng.getCndireccion());
+            txttel.setText(cng.getCntelefono());
+            txtabr.setText(cng.getCnabrevia());
         }
         llenarCB();         
          
@@ -52,7 +64,14 @@ public class AddConsignatario extends javax.swing.JFrame {
             combobox.addItem(resultat.get(i));
         }
         if("UPD".equals(mode)){
-            
+            String codt = ConsignatariosControlador.RecCng(codCons);
+            int pos = 0;
+            for(int i=0; i<resultat.size();i++){
+                if(resultat.get(i).equals(codt)){
+                    pos = i;
+                }
+            }
+            combobox.setSelectedIndex(pos);
         }
     }
 
@@ -225,8 +244,9 @@ public class AddConsignatario extends javax.swing.JFrame {
             String fecha = Formato.FechaHoy2();        
             int codcab = Integer.parseInt(selected.substring(0, 1));
             int codtar = Integer.parseInt(selected.substring(2, 3));
-            Consignatarios cng = new Consignatarios(0,nombre,abrevia,dir,tel,ruc,usuario,fecha,"00:00","M",codcab,codtar,0,0);
+            
             if("INS".equals(mode)){
+                Consignatarios cng = new Consignatarios(0,nombre,abrevia,dir,tel,ruc,usuario,fecha,"00:00","M",codcab,codtar,0,0);
                 String res = ConsignatariosControlador.adConsig(cng);
                 if(!res.equals("")){
                     JOptionPane.showMessageDialog(null, res);
@@ -234,6 +254,15 @@ public class AddConsignatario extends javax.swing.JFrame {
                     limpiar();
                 }
             } else {
+                Consignatarios cng = new Consignatarios(codCons,nombre,abrevia,dir,tel,ruc,usuario,fecha,"00:00","M",codcab,codtar,0,codCons);
+                String res = ConsignatariosControlador.modiConsig(cng);
+                if(!res.equals("")){
+                    JOptionPane.showMessageDialog(null, res);
+                }else{
+                    JOptionPane.showMessageDialog(null, "Modificado Exitosamente");
+                    limpiar();
+                    this.dispose();
+                }                
             }
         }
     }//GEN-LAST:event_jButton2ActionPerformed

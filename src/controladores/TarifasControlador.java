@@ -35,6 +35,6 @@ public class TarifasControlador {
             ls.add(rs.getString("tt_cod_cab")+"-"+rs.getString("tt_codigo"));
         }
     return ls;
-    }    
+    }   
     
 }

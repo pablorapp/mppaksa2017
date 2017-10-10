@@ -148,6 +148,9 @@
           <Image iconType="3" name="/32x32/document_delete.png"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="elicnActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="imprimir">
       <Properties>

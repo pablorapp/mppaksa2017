@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -68,7 +69,7 @@ public class ConsignatariosList extends javax.swing.JFrame {
             tbConsignatario.getColumnModel().getColumn(2).setPreferredWidth(280);
             tbConsignatario.getColumnModel().getColumn(3).setPreferredWidth(280);
             tbConsignatario.getColumnModel().getColumn(4).setPreferredWidth(130);
-            tbConsignatario.getColumnModel().getColumn(5).setPreferredWidth(130);            
+            tbConsignatario.getColumnModel().getColumn(5).setPreferredWidth(130);           
         }
         
 
@@ -136,6 +137,11 @@ public class ConsignatariosList extends javax.swing.JFrame {
         });
 
         elicn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/document_delete.png"))); // NOI18N
+        elicn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                elicnActionPerformed(evt);
+            }
+        });
 
         imprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/piechart.png"))); // NOI18N
 
@@ -204,7 +210,7 @@ public class ConsignatariosList extends javax.swing.JFrame {
     private void newcnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newcnActionPerformed
         modo = "INS";
         try {
-            new AddConsignatario(this,true,modo,"",usuario).setVisible(true);
+            new AddConsignatario(this,true,modo,"0",usuario).setVisible(true);
         } catch (SQLException ex) {
             Logger.getLogger(ConsignatariosList.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -223,6 +229,20 @@ public class ConsignatariosList extends javax.swing.JFrame {
             Logger.getLogger(ConsignatariosList.class.getName()).log(Level.SEVERE, null, ex);
         }        
     }//GEN-LAST:event_modicnActionPerformed
+
+    private void elicnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elicnActionPerformed
+        int cod = Integer.parseInt(tbConsignatario.getValueAt(tbConsignatario.getSelectedRow(),0).toString()) ;
+        String nombre = tbConsignatario.getValueAt(tbConsignatario.getSelectedRow(),2).toString();
+        int reply = JOptionPane.showConfirmDialog(null, "Desea eliminar "+nombre +" ?", modo, JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION){
+          String res = ConsignatariosControlador.eliConsig(cod);
+                if(!res.equals("")){
+                    JOptionPane.showMessageDialog(null, res);
+                }else{
+                    JOptionPane.showMessageDialog(null, "Eliminado Exitosamente");
+                }          
+        }                
+    }//GEN-LAST:event_elicnActionPerformed
 
 //    /**
 //     * @param args the command line arguments

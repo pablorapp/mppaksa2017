@@ -44,9 +44,9 @@ public class Consignatarios {
         this.consig_id = consig_id;
     }
 
-    public Consignatarios() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    public Consignatarios() {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
 
     public int getCncodigo() {
         return cncodigo;
