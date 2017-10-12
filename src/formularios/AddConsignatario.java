@@ -7,16 +7,10 @@ package formularios;
 
 import controladores.ConsignatariosControlador;
 import controladores.TarifasControlador;
-import java.awt.Frame;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import javax.swing.JOptionPane;
 import modelos.Consignatarios;
-import programas.Conexion;
 import programas.Formato;
 
 /**
@@ -32,6 +26,8 @@ public class AddConsignatario extends javax.swing.JFrame {
      * @param parent
      * @param modal
      * @param modo
+     * @param codigo
+     * @param usu
      * @throws java.sql.SQLException
      */
     public AddConsignatario(java.awt.Frame parent, boolean modal,String modo,String codigo,String usu) throws SQLException {

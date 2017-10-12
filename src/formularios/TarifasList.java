@@ -7,8 +7,10 @@ package formularios;
 
 import controladores.TarifasControlador;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -28,6 +30,7 @@ public class TarifasList extends javax.swing.JFrame {
     public TarifasList(String usu) {
         initComponents();
         setLocationRelativeTo(null);
+        usuario = usu;
         modelo = new DefaultTableModel();
         getColumnas();
         setFilas();          
@@ -123,10 +126,20 @@ public class TarifasList extends javax.swing.JFrame {
         });
 
         moditf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/file_edit.png"))); // NOI18N
+        moditf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                moditfActionPerformed(evt);
+            }
+        });
 
         elitf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/file_delete.png"))); // NOI18N
+        elitf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                elitfActionPerformed(evt);
+            }
+        });
 
-        imprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/piechart.png"))); // NOI18N
+        imprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/document.png"))); // NOI18N
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/notification_error.png"))); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -198,8 +211,28 @@ public class TarifasList extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void newtfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newtfActionPerformed
-        // TODO add your handling code here:
+        modo = "INS";
+        new AddTarifa(this,true,modo,"0",usuario).setVisible(true);        
     }//GEN-LAST:event_newtfActionPerformed
+
+    private void moditfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moditfActionPerformed
+        modo = "UPD";
+        String cod = tbTarifa.getValueAt(tbTarifa.getSelectedRow(),0).toString();
+        new AddTarifa(this,true,modo,cod,usuario).setVisible(true);  
+    }//GEN-LAST:event_moditfActionPerformed
+
+    private void elitfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elitfActionPerformed
+        String cod = tbTarifa.getValueAt(tbTarifa.getSelectedRow(),0).toString();
+        int reply = JOptionPane.showConfirmDialog(null, "Desea eliminar "+cod +" ?", modo, JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION){
+          String res = TarifasControlador.eliTarif(cod);
+                if(!res.equals("")){
+                    JOptionPane.showMessageDialog(null, res);
+                }else{
+                    JOptionPane.showMessageDialog(null, "Eliminado Exitosamente");
+                }          
+        }     
+    }//GEN-LAST:event_elitfActionPerformed
 
     /**
      * @param args the command line arguments

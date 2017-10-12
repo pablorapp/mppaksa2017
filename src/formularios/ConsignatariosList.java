@@ -26,6 +26,7 @@ public class ConsignatariosList extends javax.swing.JFrame {
     String usuario;
     /**
      * Creates new form ConsignatariosList
+     * @param usu
      */
     public ConsignatariosList(String usu) {
         initComponents();
