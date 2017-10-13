@@ -7,6 +7,7 @@ package menu;
 
 import formularios.ConsignatariosList;
 import formularios.MercaderiasList;
+import formularios.OrigenList;
 import formularios.TarifasList;
 import javax.swing.ImageIcon;
 
@@ -103,6 +104,11 @@ public class menu extends javax.swing.JFrame {
         jMenu3.add(jMenuItem7);
 
         jMenuItem8.setText("Lugar de Origen");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem8);
 
         jMenuBar1.add(jMenu3);
@@ -199,6 +205,10 @@ public class menu extends javax.swing.JFrame {
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         new MercaderiasList(usuario).setVisible(true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        new OrigenList(usuario).setVisible(true);
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     /**
      * @param args the command line arguments
