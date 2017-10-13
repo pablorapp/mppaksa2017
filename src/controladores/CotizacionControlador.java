@@ -11,16 +11,18 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelos.Origen;
+import modelos.Cotizacion;
 import programas.Conexion;
 
 /**
  *
  * @author Mauro
  */
-public class OrigenControlador {
+public class CotizacionControlador {
+    
     
     public static ResultSet consultaLista() throws SQLException {
-        String seleccion = "SELECT ori_codigo, ori_descri, ori_telef, ori_contac, fec_oper, usuar_oper, hora_oper, operacion FROM origen order by ori_codigo";
+        String seleccion = "SELECT tc_fec_cot, tc_cot_mon, usuar_oper, fec_oper, hora_oper, operacion FROM cotizacion order by tc_fec_cot desc";
         Conexion con = new Conexion();
         PreparedStatement ps = con.con.prepareStatement(seleccion);
         ResultSet rs = ps.executeQuery();
@@ -126,5 +128,6 @@ public class OrigenControlador {
         
         return res;
     }           
+        
     
 }

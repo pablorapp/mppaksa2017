@@ -24,6 +24,7 @@ public class OrigenList extends javax.swing.JFrame {
     String usuario;
     /**
      * Creates new form OrigenList
+     * @param usu
      */
     public OrigenList(String usu) {
         initComponents();
