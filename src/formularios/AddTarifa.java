@@ -229,9 +229,9 @@ public class AddTarifa extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, res);
                 }else{
                     limpiar();
+
                 }
             }else{
-                System.out.println(codc + " / " + codt);
                 Tarifas tar = new Tarifas(codc,codt,tarif1,tarif2,tarif3,desc,descA,"",1,"","S",usuario);
                 String res = TarifasControlador.modiConsig(tar);
                 if(!res.equals("")){
@@ -279,5 +279,7 @@ public class AddTarifa extends javax.swing.JFrame {
     private javax.swing.JTextField txtabr;
     private javax.swing.JTextField txtdesc;
     // End of variables declaration//GEN-END:variables
+
+
 
 }

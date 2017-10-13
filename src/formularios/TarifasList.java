@@ -212,13 +212,18 @@ public class TarifasList extends javax.swing.JFrame {
 
     private void newtfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newtfActionPerformed
         modo = "INS";
-        new AddTarifa(this,true,modo,"0",usuario).setVisible(true);        
+        new AddTarifa(this,true,modo,"0",usuario).setVisible(true);      
+
+        cleanJtable();
+        setFilas();    
     }//GEN-LAST:event_newtfActionPerformed
 
     private void moditfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moditfActionPerformed
         modo = "UPD";
         String cod = tbTarifa.getValueAt(tbTarifa.getSelectedRow(),0).toString();
         new AddTarifa(this,true,modo,cod,usuario).setVisible(true);  
+        cleanJtable();
+        setFilas();        
     }//GEN-LAST:event_moditfActionPerformed
 
     private void elitfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elitfActionPerformed
@@ -230,10 +235,19 @@ public class TarifasList extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, res);
                 }else{
                     JOptionPane.showMessageDialog(null, "Eliminado Exitosamente");
+                    cleanJtable();
+                    setFilas();
                 }          
         }     
     }//GEN-LAST:event_elitfActionPerformed
 
+    
+    private void cleanJtable(){
+                for (int i = 0; i < tbTarifa.getRowCount(); i++) {
+                modelo.removeRow(i);
+                i-=1;
+                }
+    }
     /**
      * @param args the command line arguments
      */
