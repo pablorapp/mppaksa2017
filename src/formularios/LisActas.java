@@ -67,7 +67,7 @@ public class LisActas extends javax.swing.JFrame {
             
             String ori = "";
             try{
-                //ori = OrigenControlador.recOri(act.getMa_nro_ing()).getOri_descri();
+                ori = OrigenControlador.recOri(act.getMa_nro_ing()).getOri_descri();
             }catch(Exception e){
                 
             }
