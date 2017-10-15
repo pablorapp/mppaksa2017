@@ -56,7 +56,7 @@ public class AddMercaderia extends javax.swing.JFrame {
         btnCancel = new javax.swing.JButton();
         btnConfirm = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         titulo.setFont(new java.awt.Font("Leelawadee UI", 1, 18)); // NOI18N
         titulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

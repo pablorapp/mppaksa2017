@@ -97,7 +97,7 @@ public class AddConsignatario extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         txtabr = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         titulo.setFont(new java.awt.Font("Leelawadee UI", 1, 18)); // NOI18N
         titulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

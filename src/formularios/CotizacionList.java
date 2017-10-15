@@ -71,7 +71,7 @@ public class CotizacionList extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jdt = new datechooser.beans.DateChooserDialog();
+        jtd = new datechooser.beans.DateChooserDialog();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbCotiza = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -79,11 +79,9 @@ public class CotizacionList extends javax.swing.JFrame {
         btnNew = new javax.swing.JButton();
         btnmodi = new javax.swing.JButton();
         btnElim = new javax.swing.JButton();
-        btnCancel = new javax.swing.JButton();
-        jtd = new com.toedter.calendar.JDateChooser();
         txtBuscar = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tbCotiza.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -107,26 +105,37 @@ public class CotizacionList extends javax.swing.JFrame {
         jLabel2.setText("Buscar");
 
         btnNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/file_add.png"))); // NOI18N
-
-        btnmodi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/file_edit.png"))); // NOI18N
-
-        btnElim.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/file_delete.png"))); // NOI18N
-
-        btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/notification_error.png"))); // NOI18N
-        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+        btnNew.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelActionPerformed(evt);
+                btnNewActionPerformed(evt);
             }
         });
 
-        jtd.setDateFormatString("dd-MM-yyyy");
-        jtd.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jtdPropertyChange(evt);
+        btnmodi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/file_edit.png"))); // NOI18N
+        btnmodi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnmodiActionPerformed(evt);
+            }
+        });
+
+        btnElim.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/file_delete.png"))); // NOI18N
+        btnElim.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnElimActionPerformed(evt);
             }
         });
 
         txtBuscar.setOpaque(false);
+        txtBuscar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtBuscarMouseClicked(evt);
+            }
+        });
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -136,27 +145,21 @@ public class CotizacionList extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel2)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jtd, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 63, Short.MAX_VALUE)))
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnmodi, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnElim, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,17 +168,12 @@ public class CotizacionList extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnElim, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnmodi, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(btnElim, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnmodi, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel2)
-                    .addComponent(jtd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtBuscar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -185,35 +183,83 @@ public class CotizacionList extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_btnCancelActionPerformed
-
-    private void jtdPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jtdPropertyChange
-        String dia = Integer.toString(jtd.getCalendar().get(Calendar.DAY_OF_MONTH));
-        String mes = Integer.toString(jtd.getCalendar().get(Calendar.MONTH)+1);
-        String year = Integer.toString(jtd.getCalendar().get(Calendar.YEAR));
-        String fecha = (year + "-" + mes + "-" + dia);
-        if(!fecha.isEmpty()){
+    private void txtBuscarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBuscarMouseClicked
+        if (evt.isMetaDown() ){
+            Dimension dim = new Dimension(400,200);
+            jtd.setCalendarPreferredSize(dim);
+            jtd.showDialog(null, true, this.getLocation());
+            Calendar cal = jtd.getSelectedDate();
+            int dia = cal.get(Calendar.DAY_OF_MONTH);
+            int mes = cal.get(Calendar.MONTH) + 1;
+            int ano = cal.get(Calendar.YEAR);
+            String fecha = "";
+            if(dia<10){
+                fecha += "0"+dia;
+            }else{
+                fecha += dia;
+            }
+            if(mes<10){
+                fecha += "-0"+mes;
+            }else{
+                fecha += "-"+mes;
+            }
+            fecha += "-"+ano;
             txtBuscar.setText(fecha);
             TableRowSorter tabla = new TableRowSorter(modelo);
             tabla.setRowFilter(RowFilter.regexFilter(txtBuscar.getText().toUpperCase()));
-            tbCotiza.setRowSorter(tabla);             
+            tbCotiza.setRowSorter(tabla);            
         }
-    }//GEN-LAST:event_jtdPropertyChange
+    }//GEN-LAST:event_txtBuscarMouseClicked
 
+    private void txtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyReleased
+            TableRowSorter tabla = new TableRowSorter(modelo);
+            tabla.setRowFilter(RowFilter.regexFilter(txtBuscar.getText().toUpperCase()));
+            tbCotiza.setRowSorter(tabla);     
+    }//GEN-LAST:event_txtBuscarKeyReleased
+
+    private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
+        modo = "INS";
+        new AddCotizacion(this,true,modo,"",usuario).setVisible(true);          
+    }//GEN-LAST:event_btnNewActionPerformed
+
+    private void btnmodiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnmodiActionPerformed
+        modo = "UPD";
+        String cod = tbCotiza.getValueAt(tbCotiza.getSelectedRow(),0).toString();
+        new AddCotizacion(this,true,modo,cod,usuario).setVisible(true);    
+    }//GEN-LAST:event_btnmodiActionPerformed
+
+    private void btnElimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnElimActionPerformed
+        String cod = tbCotiza.getValueAt(tbCotiza.getSelectedRow(),0).toString();
+        int reply = JOptionPane.showConfirmDialog(null, "Desea eliminar la Cotización de la fecha : "+cod +" ?", modo, JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION){
+          String res = CotizacionControlador.eliCoti(cod);
+                if(!res.equals("")){
+                    JOptionPane.showMessageDialog(null, res);
+                }else{
+                    JOptionPane.showMessageDialog(null, "Eliminado Exitosamente");
+                    cleanJtable();
+                    setFilas();
+                }          
+        }    
+    }//GEN-LAST:event_btnElimActionPerformed
+
+    
+    private void cleanJtable(){
+                for (int i = 0; i < tbCotiza.getRowCount(); i++) {
+                modelo.removeRow(i);
+                i-=1;
+                }
+    }    
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnElim;
     private javax.swing.JButton btnNew;
     private javax.swing.JButton btnmodi;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private datechooser.beans.DateChooserDialog jdt;
-    private com.toedter.calendar.JDateChooser jtd;
+    private datechooser.beans.DateChooserDialog jtd;
     private javax.swing.JTable tbCotiza;
     private javax.swing.JTextField txtBuscar;
     // End of variables declaration//GEN-END:variables

@@ -22,7 +22,7 @@ public class CotizacionControlador {
     
     
     public static ResultSet consultaLista() throws SQLException {
-        String seleccion = "SELECT tc_fec_cot, tc_cot_mon, usuar_oper, fec_oper, hora_oper, operacion FROM cotizacion order by tc_fec_cot desc";
+        String seleccion = "SELECT  to_char(tc_fec_cot,'dd-MM-yyyy') as tc_fec_cot, tc_cot_mon, usuar_oper, fec_oper, hora_oper, operacion FROM cotizacion order by date_part('year',tc_fec_cot) desc";
         Conexion con = new Conexion();
         PreparedStatement ps = con.con.prepareStatement(seleccion);
         ResultSet rs = ps.executeQuery();
@@ -31,49 +31,48 @@ public class CotizacionControlador {
     
     
     
-    public static Origen recOri(int cod){        
-        Origen res = null;
+    public static Cotizacion recCtz(String fec){        
+        Cotizacion res = null;
         Conexion con = new Conexion();        
         PreparedStatement ps = null;
         ResultSet rs = null;
         try{
-            ps = con.con.prepareStatement("SELECT ori_codigo, ori_descri, ori_telef, ori_contac, fec_oper, usuar_oper, hora_oper, operacion FROM origen where  ori_codigo = "+cod+"  ");
+            ps = con.con.prepareStatement("SELECT  to_char(tc_fec_cot,'dd-MM-yyyy') as tc_fec_cot, tc_cot_mon, usuar_oper, fec_oper, hora_oper, operacion FROM cotizacion where  to_char(tc_fec_cot,'dd-MM-yyyy') = ?  ");
+            ps.setString(1, fec);
             rs = ps.executeQuery();        
             if(rs.next()){
-                    res = new Origen(rs.getInt("ori_codigo"),rs.getString("ori_descri"),rs.getString("ori_telef"),rs.getString("ori_contac"),rs.getString("fec_oper"),rs.getString("usuar_oper"),rs.getString("hora_oper"),rs.getString("operacion"));
-            }                    
+                    res = new Cotizacion(rs.getString("tc_fec_cot"),rs.getDouble("tc_cot_mon"),rs.getString("usuar_oper"),rs.getString("fec_oper"),rs.getString("hora_oper"),rs.getString("operacion"));
+            }            
         }catch(Exception ex){
             Logger.getLogger(ConsignatariosControlador.class.getName()).log(Level.SEVERE, null, ex);            
         }        
         return res;
     }        
     
-    public static String adMerc(Origen tar){
+    public static String addCotiza(Cotizacion cot){
 
-        String res = "No se pudo Registrar Origen";
+        String res = "No se pudo Registrar Cotizacion";
         Conexion con = new Conexion();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try{
 
-            ps = con.con.prepareStatement("select count(*) as cant from origen where ori_codigo = ?  ");
-            ps.setInt(1, tar.getOri_codigo());
+            ps = con.con.prepareStatement("select count(*) as cant from cotizacion where to_char(tc_fec_cot,'dd-MM-yyyy') = ?  ");
+            ps.setString(1, cot.getTc_fec_cot());
             rs = ps.executeQuery();
 
             if(rs.next()){
                 if(rs.getInt("cant")>0){
                     res = "Ya existe el registro";
                 }else{
-                    ps = con.con.prepareStatement("INSERT INTO origen VALUES (?, ?, ?, ?, to_date(?,'YYYY-MM-DD'), ?, ?, ?)");
-                    ps.setInt(1, tar.getOri_codigo());
-                    ps.setString(2, tar.getOri_descri());
-                    ps.setString(3, tar.getOri_telef());
-                    ps.setString(4, tar.getOri_contac());
-                    ps.setString(5, tar.getFec_oper());
-                    ps.setString(6, tar.getUsuar_oper());
-                    ps.setString(7, tar.getHora_oper());
-                    ps.setString(8, tar.getOperacion());
+                    ps = con.con.prepareStatement("INSERT INTO cotizacion VALUES (to_date(?,'YYYY-MM-DD'), ?, ?, to_date(?,'YYYY-MM-DD'), ?, ?)");
+                    ps.setString(1, cot.getTc_fec_cot());
+                    ps.setDouble(2, cot.getTc_cot_mon());
+                    ps.setString(3, cot.getUsuar_oper());
+                    ps.setString(4, cot.getFec_oper());
+                    ps.setString(5, cot.getHora_oper());
+                    ps.setString(6, cot.getOperacion());
                     ps.execute();        
                     res = "";                       
                 }             
@@ -86,23 +85,21 @@ public class CotizacionControlador {
     }    
     
     
-    public static String modiOri(Origen cng){
+    public static String modiCtz(Cotizacion cot){
 
-        String res = "No se pudo Modificar Origen";
+        String res = "No se pudo Modificar Cotizacion";
         Conexion con = new Conexion();
         PreparedStatement ps = null;
 
         try{
 
-                ps = con.con.prepareStatement("UPDATE origen SET ori_descri=?, ori_telef=?, ori_contac=?, fec_oper=to_date(?,'YYYY-MM-DD'), usuar_oper=?, hora_oper=?, operacion=?  WHERE ori_codigo = ? ");
-                ps.setString(1, cng.getOri_descri());
-                ps.setString(2, cng.getOri_telef());
-                ps.setString(3, cng.getOri_contac());
-                ps.setString(4, cng.getFec_oper());
-                ps.setString(5, cng.getUsuar_oper());
-                ps.setString(6, cng.getHora_oper());
-                ps.setString(7, cng.getOperacion());
-                ps.setInt(8, cng.getOri_codigo());
+                ps = con.con.prepareStatement("UPDATE cotizacion SET  tc_cot_mon=?, usuar_oper=?, fec_oper=to_date(?,'YYYY-MM-DD'), hora_oper=?, operacion=? WHERE tc_fec_cot = ? ");
+                ps.setDouble(1, cot.getTc_cot_mon());
+                ps.setString(2, cot.getUsuar_oper());
+                ps.setString(3, cot.getFec_oper());
+                ps.setString(4, cot.getHora_oper());
+                ps.setString(5, cot.getOperacion());
+                ps.setString(6, cot.getTc_fec_cot());
                 ps.execute();        
                 res = "";                               
             
@@ -112,14 +109,18 @@ public class CotizacionControlador {
         return res;
     }        
     
-    public static String eliOri(int cod){
-        String res = "No se pudo Eliminar Origen";
+    public static String eliCoti(String fec){
+        String res = "No se pudo Eliminar Cotizacion";
         Conexion con = new Conexion();
         PreparedStatement ps = null;         
+        String dia = fec.substring(0, 2);
+        String mes = fec.substring(3,5);
+        String anho = fec.substring(6, 10);
+        String fechaV = anho + "-" + mes + "-" + dia;              
         
         try{
-            ps = con.con.prepareStatement("delete from origen WHERE ori_codigo = ? ");
-            ps.setInt(1, cod);
+            ps = con.con.prepareStatement("delete from cotizacion where to_char(tc_fec_cot,'dd-MM-yyyy') = ? ");
+            ps.setString(1, fechaV);
             ps.execute();
             res = "";
         }catch(Exception ex){

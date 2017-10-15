@@ -12,13 +12,13 @@ package modelos;
 public class Cotizacion {
     
     String tc_fec_cot;
-    int tc_cot_mon;
+    Double tc_cot_mon;
     String usuar_oper;
     String fec_oper;
     String hora_oper;
     String operacion;
     
-    public Cotizacion(String tc_fec_cot,int tc_cot_mon,String usuar_oper,String fec_oper,String hora_oper,String operacion){
+    public Cotizacion(String tc_fec_cot,Double tc_cot_mon,String usuar_oper,String fec_oper,String hora_oper,String operacion){
         this.tc_fec_cot = tc_fec_cot;
         this.tc_cot_mon = tc_cot_mon;
         this.usuar_oper = usuar_oper;
@@ -26,6 +26,7 @@ public class Cotizacion {
         this.hora_oper = hora_oper;
         this.operacion = operacion;
     }
+
 
     public String getTc_fec_cot() {
         return tc_fec_cot;
@@ -35,11 +36,11 @@ public class Cotizacion {
         this.tc_fec_cot = tc_fec_cot;
     }
 
-    public int getTc_cot_mon() {
+    public Double getTc_cot_mon() {
         return tc_cot_mon;
     }
 
-    public void setTc_cot_mon(int tc_cot_mon) {
+    public void setTc_cot_mon(Double tc_cot_mon) {
         this.tc_cot_mon = tc_cot_mon;
     }
 

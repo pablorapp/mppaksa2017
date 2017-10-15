@@ -83,9 +83,8 @@ public class OrigenList extends javax.swing.JFrame {
         btnModi = new javax.swing.JButton();
         btnDel = new javax.swing.JButton();
         imprimir = new javax.swing.JButton();
-        btnSalir = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tbOrigen.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -137,13 +136,6 @@ public class OrigenList extends javax.swing.JFrame {
 
         imprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/document.png"))); // NOI18N
 
-        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/notification_error.png"))); // NOI18N
-        btnSalir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalirActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -165,8 +157,7 @@ public class OrigenList extends javax.swing.JFrame {
                         .addComponent(btnDel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(imprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -179,16 +170,14 @@ public class OrigenList extends javax.swing.JFrame {
                     .addComponent(btnNew)
                     .addComponent(btnModi)
                     .addComponent(btnDel)
-                    .addComponent(imprimir)
-                    .addComponent(btnSalir))
+                    .addComponent(imprimir))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(txtBuscar)
                         .addGap(3, 3, 3)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -222,10 +211,6 @@ public class OrigenList extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnDelActionPerformed
 
-    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_btnSalirActionPerformed
-
     private void txtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyReleased
         TableRowSorter tabla = new TableRowSorter(modelo);
         tabla.setRowFilter(RowFilter.regexFilter(txtBuscar.getText().toUpperCase()));
@@ -237,7 +222,6 @@ public class OrigenList extends javax.swing.JFrame {
     private javax.swing.JButton btnDel;
     private javax.swing.JButton btnModi;
     private javax.swing.JButton btnNew;
-    private javax.swing.JButton btnSalir;
     private javax.swing.JButton imprimir;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

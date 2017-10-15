@@ -14,9 +14,10 @@ import modelos.Tarifas;
  *
  * @author Mauro
  */
-public class AddTarifa extends javax.swing.JFrame {
-    String mode;
-    String usuario;
+public class AddTarifa extends javax.swing.JDialog {
+    static String mode;
+    static String usuario;
+    static String codig;
     int cod1;
     int cod2;
     /** Creates new form AddTarifa
@@ -36,6 +37,7 @@ public class AddTarifa extends javax.swing.JFrame {
             titulo.setText("Modificar Tarifa");
             cod1 = Integer.parseInt(codigo.split("-")[0]);
             cod2 = Integer.parseInt(codigo.split("-")[1]);
+            codig = String.valueOf(cod1)+"-"+String.valueOf(cod2);
             Tarifas tar = TarifasControlador.recTar(cod1, cod2);
             codcab.setText(String.valueOf(tar.getTt_cod_cab()));        
             codcab.setEnabled(false);
@@ -75,7 +77,7 @@ public class AddTarifa extends javax.swing.JFrame {
         btnCancel = new javax.swing.JButton();
         btnAceptar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         titulo.setFont(new java.awt.Font("Leelawadee UI", 1, 18)); // NOI18N
         titulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -206,6 +208,7 @@ public class AddTarifa extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         if(codcab.getText().isEmpty() || codtar.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Ingrese el Codigo de Tarifa");
@@ -259,6 +262,49 @@ public class AddTarifa extends javax.swing.JFrame {
         trf3.setText("");
         txtabr.setText("");
     }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(ActasCarga.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ActasCarga.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ActasCarga.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ActasCarga.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                AddTarifa dialog = new AddTarifa(new javax.swing.JFrame(), true,mode,codig,usuario);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;

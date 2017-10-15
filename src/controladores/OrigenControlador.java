@@ -8,6 +8,9 @@ package controladores;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelos.Origen;
@@ -36,8 +39,10 @@ public class OrigenControlador {
         ResultSet rs = null;
         try{
             ps = con.con.prepareStatement("SELECT ori_codigo, ori_descri, ori_telef, ori_contac, fec_oper, usuar_oper, hora_oper, operacion FROM origen where  ori_codigo = "+cod+"  ");
+                                                                                                    
             rs = ps.executeQuery();        
             if(rs.next()){
+                                                        
                     res = new Origen(rs.getInt("ori_codigo"),rs.getString("ori_descri"),rs.getString("ori_telef"),rs.getString("ori_contac"),rs.getString("fec_oper"),rs.getString("usuar_oper"),rs.getString("hora_oper"),rs.getString("operacion"));
             }                    
         }catch(Exception ex){
@@ -45,6 +50,25 @@ public class OrigenControlador {
         }        
         return res;
     }        
+    
+        public static Origen recOri1(int id){
+        Conexion conn = new Conexion();
+        Origen ori = null;
+        try {
+            ResultSet rs;
+            try (Statement stm = conn.con.createStatement()) {
+                rs = stm.executeQuery("select * from origen where ori_codigo = "+id);
+                if(rs.next()){
+                    ori = new Origen(id,rs.getString("ori_descri"),rs.getString("ori_telef") ,rs.getString("ori_contac") ,rs.getString("fec_oper"),rs.getString("usuar_oper"),rs.getString("hora_oper") ,rs.getString("operacion") );
+                }
+                stm.close();
+            }
+            rs.close();
+        } catch (SQLException e) {
+            Logger.getLogger(ActasControlador.class.getName()).log(Level.SEVERE,null,e);
+        }
+        return ori;
+    }
     
     public static String adMerc(Origen tar){
 
@@ -125,6 +149,26 @@ public class OrigenControlador {
         }
         
         return res;
-    }           
+    }       
+
+        public static List<Origen> recListOri(){
+        Conexion conn = new Conexion();
+        List<Origen> oris = new ArrayList<>();
+        try {
+            ResultSet rs;
+            try (Statement stm = conn.con.createStatement()) {
+                rs = stm.executeQuery("select * from origen");
+                while(rs.next()){
+                    oris.add(new Origen(rs.getInt("ori_codigo"),rs.getString("ori_descri"), rs.getString("ori_telef"), rs.getString("ori_contac"), rs.getString("fec_oper"), rs.getString("usuar_oper"), rs.getString("hora_oper"), rs.getString("operacion") ));
+                }
+                stm.close();
+            }
+            rs.close();
+            
+        } catch (SQLException e) {
+            Logger.getLogger(ActasControlador.class.getName()).log(Level.SEVERE,null,e);
+        }
+        return oris;
+    }
     
 }
