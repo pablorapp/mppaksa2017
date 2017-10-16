@@ -21,14 +21,9 @@ public class Conexion {
     public Connection con;
     public Conexion(){
             try {
-                if(conn!=null){
-                    if(conn.isValid(1000)){
-                        Class.forName("org.postgresql.Driver");
-                        conn = DriverManager.getConnection(url,  "postgres", "123");
-                    }
-                }else{
+                if(conn==null){
                     Class.forName("org.postgresql.Driver");
-                    conn = DriverManager.getConnection(url,  "postgres", "123");
+                    conn = DriverManager.getConnection(url,  "postgres", "solomauro");
                 }
                 con = conn;
             } catch (SQLException e) {
