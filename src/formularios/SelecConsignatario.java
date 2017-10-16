@@ -28,6 +28,8 @@ public class SelecConsignatario extends javax.swing.JDialog {
     DefaultTableModel tabla;
     int codigo;
     String desc;
+    int codcab;
+    int codtar;
     public SelecConsignatario(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -43,12 +45,20 @@ public class SelecConsignatario extends javax.swing.JDialog {
         colum.getColumn(0).setMinWidth(80);
         colum.getColumn(0).setMaxWidth(80);
         colum.getColumn(0).setWidth(80);
+
+        colum.getColumn(2).setMinWidth(0);
+        colum.getColumn(2).setMaxWidth(0);
+        colum.getColumn(2).setWidth(0);
+
+        colum.getColumn(3).setMinWidth(0);
+        colum.getColumn(3).setMaxWidth(0);
+        colum.getColumn(3).setWidth(0);        
     }
     private void cargaTabla(){
         try {
             ResultSet rs = ConsignatariosControlador.consultaLista();
             while(rs.next()){
-                Object[] obj = {rs.getInt("consig_id"),rs.getString("cnnombre")};
+                Object[] obj = {rs.getInt("consig_id"),rs.getString("cnnombre"),rs.getInt("cncodcab"),rs.getInt("cncodtar")};
                 tabla.addRow(obj);
             }
         } catch (SQLException ex) {
@@ -88,11 +98,11 @@ public class SelecConsignatario extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Codigo", "Consignatario"
+                "Codigo", "Consignatario", ".", "."
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -157,6 +167,8 @@ public class SelecConsignatario extends javax.swing.JDialog {
         if(evt.getClickCount()==2 && tblConsig.getSelectedRow()>=0){
             this.codigo = Integer.parseInt(tblConsig.getValueAt( tblConsig.getSelectedRow(),0)+"");
             this.desc = String.valueOf(tblConsig.getValueAt(tblConsig.getSelectedRow(),1));
+            this.codcab = Integer.parseInt(tblConsig.getValueAt( tblConsig.getSelectedRow(),2)+"");
+            this.codtar = Integer.parseInt(tblConsig.getValueAt( tblConsig.getSelectedRow(),3)+"");
             this.dispose();
         }
     }//GEN-LAST:event_tblConsigMouseClicked
@@ -165,6 +177,8 @@ public class SelecConsignatario extends javax.swing.JDialog {
         if(tblConsig.getSelectedRow()>= 0){
             this.codigo = Integer.parseInt(tblConsig.getValueAt( tblConsig.getSelectedRow(),0)+"");
             this.desc = String.valueOf(tblConsig.getValueAt(tblConsig.getSelectedRow(),1));
+            this.codcab = Integer.parseInt(tblConsig.getValueAt( tblConsig.getSelectedRow(),2)+"");
+            this.codtar = Integer.parseInt(tblConsig.getValueAt( tblConsig.getSelectedRow(),3)+"");            
             this.dispose();
         }else{
             JOptionPane.showMessageDialog(this, "Seleccione un registro");

@@ -32,14 +32,19 @@ import programas.Formato;
  * @author Pablo
  */
 public class ActasCarga extends javax.swing.JDialog {
-
+    String usuario;
+    int codActa;
+    String mode;
     /**
      * Creates new form ActasCarga
      */
     DefaultTableModel tabla;
-    public ActasCarga(java.awt.Frame parent, boolean modal) {
+    public ActasCarga(java.awt.Frame parent, boolean modal,String modo,int codigo,String usu) {
         super(parent, modal);
         initComponents();
+        usuario = usu;
+        codActa = codigo;
+        mode = modo;
         tabla = (DefaultTableModel) tblDet.getModel();
         setLocationRelativeTo(null);
         this.setTitle("Lista de Actas");
@@ -150,12 +155,13 @@ public class ActasCarga extends javax.swing.JDialog {
         btnCancelar = new javax.swing.JButton();
         btnGrabar = new javax.swing.JButton();
         txtFOB = new javax.swing.JFormattedTextField();
+        txtCodNom = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setSize(new java.awt.Dimension(0, 10));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel1.setText("Caraga de Actas");
+        jLabel1.setText("Carga de Actas");
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel2.setText("CABECERA");
@@ -296,6 +302,11 @@ public class ActasCarga extends javax.swing.JDialog {
             }
         });
 
+        txtCab.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtCabFocusLost(evt);
+            }
+        });
         txtCab.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtCabActionPerformed(evt);
@@ -410,6 +421,8 @@ public class ActasCarga extends javax.swing.JDialog {
             }
         });
 
+        txtCodNom.setEditable(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -458,10 +471,11 @@ public class ActasCarga extends javax.swing.JDialog {
                             .addComponent(txtSFac, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtConsig, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTarNom, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtConsigNom, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtMercaNom, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtTarNom, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                            .addComponent(txtConsigNom, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                            .addComponent(txtMercaNom, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                            .addComponent(txtCodNom))))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(10, 10, 10)
@@ -579,7 +593,8 @@ public class ActasCarga extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel12)
                             .addComponent(txtCab, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel23))))
+                            .addComponent(jLabel23)
+                            .addComponent(txtCodNom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
@@ -671,13 +686,26 @@ public class ActasCarga extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "Ingrese el lugar de ingreso");
                 txtOri.requestFocus();
             }else{
-//                List<Actas> acts = new ArrayList<>();
-//                for(int i = 0;i<tblDet.getRowCount();i++){
-//                    //int ma_nro_ing, int ma_no_inga, String ma_salida, String ma_des_con, double ma_val_fot, String ma_des_mer, String ma_marcar, String ma_serie, int ma_nro_fac, int ma_nro_fa1, String ma_fec_fac, String ma_hor_fac, int ma_numerar, int ma_con_dia, int ma_monto, double ma_cotisa, String ma_des_tar, String ma_bol_sal, double ma_ext_fot, String ma_orden, int ma_imp_res, double ma_suma, int ma_sumtp, double ma_iva, int ma_ivatp, String ma_tipo, String ma_transfe, int ma_cantid, int ma_cod_tra, String ma_dir_tra, String ma_des_tra, String ma_tel_tra, String ma_ruc_tra, String usuar_oper, String fec_oper, String hora_oper, String operacion, String ma_ver_con, String observa;
-//                    acts.add(new Actas(txtNroActa.getText(), txtHora.getText(), txtFecha.getText(), tblDet.getValueAt(i, 0),
-//                             tblDet.getValueAt(i, 9), tblDet.getValueAt(i, 6), tblDet.getValueAt(i, 7), tblDet.getValueAt(i, 1), tblDet.getValueAt(i, 4),
-//                            null, ALLBITS, ALLBITS, ma_salida, ma_des_con, ALLBITS, ma_des_mer, ma_marcar, ma_serie, ERROR, ERROR, ma_fec_fac, ma_hor_fac, ERROR, ABORT, ABORT, ALLBITS, ma_des_tar, ma_bol_sal, HEIGHT, ma_orden, PROPERTIES, ABORT, ALLBITS, i, WIDTH, ma_tipo, ma_transfe, ALLBITS, ABORT, ma_dir_tra, ma_des_tra, ma_tel_tra, ma_ruc_tra, usuar_oper, fec_oper, hora_oper, operacion, ma_ver_con, observa));
-//                }
+                List<Actas> acts = new ArrayList<>();
+                for(int i = 0;i<tblDet.getRowCount();i++){
+                    int Acta = Integer.parseInt(txtNroActa.getText());
+                    int mic = Integer.parseInt((String) tblDet.getValueAt(i, 0)) ;
+                    int codcab = Integer.parseInt((String) tblDet.getValueAt(i, 6)) ;
+                    int codtar = Integer.parseInt((String) tblDet.getValueAt(i, 7)) ;
+                    int consig_id = Integer.parseInt((String) tblDet.getValueAt(i, 1)) ;
+                    int codmer = Integer.parseInt((String) tblDet.getValueAt(i, 4)) ;
+                    double fob = Double.parseDouble((String) tblDet.getValueAt(i, 3));
+                    //System.out.println(tblDet.getRowCount() + "  conteo de filas");
+                    acts.add(new Actas(Acta,txtHora.getText(), txtFecha.getText(), mic,0,codcab,codtar, consig_id,codmer,"",1,0,"","",fob,txtMercaNom.getText(),"","",0,0,"1900-01-01","",0,0,0,0,"","",0,"",0,0,0,0,0,0,"",0,0,"","","","",usuario,txtFecha.getText(),txtHora.getText(),"A","",""));                                              
+                    String res = ActasControlador.adMerc(acts);
+                    Acta = 0;
+                    mic = 0;
+                    codcab = 0;
+                    codtar = 0;
+                    consig_id = 0;
+                    codmer = 0;
+                    fob = 0;
+                }
             }
         }else{
             JOptionPane.showMessageDialog(this, "Ingrese un Mic para grabar");
@@ -820,6 +848,8 @@ public class ActasCarga extends javax.swing.JDialog {
             selCons.setVisible(true);
             txtConsig.setText(selCons.codigo+"");
             txtConsigNom.setText(selCons.desc);
+            txtCab.setText(selCons.codcab+"");
+            txtTar.setText(selCons.codtar+"");
         }else{
             Consignatarios cons = ConsignatariosControlador.recConsig(Integer.parseInt(txtConsig.getText()));
             if(cons!=null){
@@ -829,6 +859,8 @@ public class ActasCarga extends javax.swing.JDialog {
                 selCons.setVisible(true);
                 txtConsig.setText(selCons.codigo+"");
                 txtConsigNom.setText(selCons.desc);
+                txtCab.setText(selCons.codcab+"");
+                txtTar.setText(selCons.codtar+"");                
             }
         }
     }//GEN-LAST:event_txtConsigFocusLost
@@ -933,47 +965,53 @@ public class ActasCarga extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnModActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ActasCarga.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ActasCarga.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ActasCarga.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ActasCarga.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void txtCabFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCabFocusLost
+        int cab = Integer.parseInt(txtCab.getText());
+        String res = TarifasControlador.RecupCodDes(cab);
+        txtCodNom.setText(res);
+    }//GEN-LAST:event_txtCabFocusLost
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                ActasCarga dialog = new ActasCarga(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
+//    /**
+//     * @param args the command line arguments
+//     */
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(ActasCarga.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(ActasCarga.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(ActasCarga.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(ActasCarga.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the dialog */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                ActasCarga dialog = new ActasCarga(new javax.swing.JFrame());
+//                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+//                    @Override
+//                    public void windowClosing(java.awt.event.WindowEvent e) {
+//                        System.exit(0);
+//                    }
+//                });
+//                dialog.setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
@@ -1015,6 +1053,7 @@ public class ActasCarga extends javax.swing.JDialog {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable tblDet;
     private javax.swing.JTextField txtCab;
+    private javax.swing.JTextField txtCodNom;
     private javax.swing.JTextField txtConsig;
     private javax.swing.JTextField txtConsigNom;
     private javax.swing.JTextField txtDescrip;

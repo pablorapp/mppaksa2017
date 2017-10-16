@@ -45,7 +45,7 @@ public class Actas {
     int ma_sumtp; //0
     double ma_iva;//iva
     int ma_ivatp;//0
-    String ma_tipo;//null
+    int ma_tipo;//null
     String ma_transfe;//null
     int ma_cantid;//0
     int ma_cod_tra;//0
@@ -60,7 +60,7 @@ public class Actas {
     String ma_ver_con;//null
     String observa;//null
 
-    public Actas(int ma_nro_act, String ma_hora, String ma_fec_act, int ma_mic_dta, int ma_cod_des, int ma_cod_cab, int ma_cod_tar, int ma_cod_con, int ma_cod_mer, String ma_cod_per, int ma_nro_ing, int ma_no_inga, String ma_salida, String ma_des_con, double ma_val_fot, String ma_des_mer, String ma_marcar, String ma_serie, int ma_nro_fac, int ma_nro_fa1, String ma_fec_fac, String ma_hor_fac, int ma_numerar, int ma_con_dia, int ma_monto, double ma_cotisa, String ma_des_tar, String ma_bol_sal, double ma_ext_fot, String ma_orden, int ma_imp_res, double ma_suma, int ma_sumtp, double ma_iva, int ma_ivatp, String ma_tipo, String ma_transfe, int ma_cantid, int ma_cod_tra, String ma_dir_tra, String ma_des_tra, String ma_tel_tra, String ma_ruc_tra, String usuar_oper, String fec_oper, String hora_oper, String operacion, String ma_ver_con, String observa) {
+    public Actas(int ma_nro_act, String ma_hora, String ma_fec_act, int ma_mic_dta, int ma_cod_des, int ma_cod_cab, int ma_cod_tar, int ma_cod_con, int ma_cod_mer, String ma_cod_per, int ma_nro_ing, int ma_no_inga, String ma_salida, String ma_des_con, double ma_val_fot, String ma_des_mer, String ma_marcar, String ma_serie, int ma_nro_fac, int ma_nro_fa1, String ma_fec_fac, String ma_hor_fac, int ma_numerar, int ma_con_dia, int ma_monto, double ma_cotisa, String ma_des_tar, String ma_bol_sal, double ma_ext_fot, String ma_orden, int ma_imp_res, double ma_suma, int ma_sumtp, double ma_iva, int ma_ivatp, int ma_tipo, String ma_transfe, int ma_cantid, int ma_cod_tra, String ma_dir_tra, String ma_des_tra, String ma_tel_tra, String ma_ruc_tra, String usuar_oper, String fec_oper, String hora_oper, String operacion, String ma_ver_con, String observa) {
         this.ma_nro_act = ma_nro_act;
         this.ma_hora = ma_hora;
         this.ma_fec_act = ma_fec_act;
@@ -111,6 +111,7 @@ public class Actas {
         this.ma_ver_con = ma_ver_con;
         this.observa = observa;
     }
+
 
     public int getMa_nro_act() {
         return ma_nro_act;
@@ -392,11 +393,11 @@ public class Actas {
         this.ma_ivatp = ma_ivatp;
     }
 
-    public String getMa_tipo() {
+    public int getMa_tipo() {
         return ma_tipo;
     }
 
-    public void setMa_tipo(String ma_tipo) {
+    public void setMa_tipo(int ma_tipo) {
         this.ma_tipo = ma_tipo;
     }
 

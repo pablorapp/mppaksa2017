@@ -227,10 +227,18 @@ public class ConsignatariosList extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, res);
                 }else{
                     JOptionPane.showMessageDialog(null, "Eliminado Exitosamente");
+                    limpiar();
+                    setFilas();
                 }          
         }                
     }//GEN-LAST:event_elicnActionPerformed
 
+    private void limpiar(){
+        while(0 <tbConsignatario.getRowCount()){
+            modelo.removeRow(0);
+        }
+    }    
+    
 //    /**
 //     * @param args the command line arguments
 //     */

@@ -153,4 +153,25 @@ public class TarifasControlador {
     }        
     
     
+    public static String RecupCodDes(int cab){
+        String res = "";
+        Conexion con = new Conexion();
+        PreparedStatement ps = null;   
+        ResultSet rs = null;
+        
+        try{
+            ps = con.con.prepareStatement("SELECT ct_des_cab FROM tc_tarifa where ct_codigo = ?");
+            ps.setInt(1, cab);
+            rs = ps.executeQuery();
+            if(rs.next()){
+                res = rs.getString("ct_des_cab");
+            }
+        }catch(Exception ex){
+            Logger.getLogger(ConsignatariosControlador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return res;
+    }
+    
+    
 }

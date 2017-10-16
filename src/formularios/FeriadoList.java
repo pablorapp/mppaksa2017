@@ -80,7 +80,6 @@ public class FeriadoList extends javax.swing.JFrame {
             pos = resultat.get(i);
         }
         Combo = combobox.getSelectedItem();
-
     }  
     
     

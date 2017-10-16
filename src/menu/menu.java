@@ -13,6 +13,8 @@ import formularios.MercaderiasList;
 import formularios.OrigenList;
 import formularios.TarifasList;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -23,6 +25,7 @@ import javax.swing.ImageIcon;
  */
 public class menu extends javax.swing.JFrame {
     String usuario;
+    int year;
     /**
      * Creates new form menu
      */
@@ -31,6 +34,8 @@ public class menu extends javax.swing.JFrame {
         setIconImage(new ImageIcon("C:/SistemaCT/imagenes/taladro.png").getImage());;
         this.setExtendedState(menu.MAXIMIZED_BOTH);
         usuario = usu;
+        Calendar c2 = new GregorianCalendar();
+        year = c2.get(Calendar.YEAR);
       //  LblFondo.setIcon(new ImageIcon("C:/SistemaCT/imagenes/the-punisher.png"));
     }
 
@@ -191,7 +196,12 @@ public class menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        new LisActas(usuario).setVisible(true);
+        try {
+            new LisActas(usuario).setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+  
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
