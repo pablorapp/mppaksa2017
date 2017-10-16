@@ -5,6 +5,11 @@
  */
 package formularios;
 
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import programas.Formato;
+
 /**
  *
  * @author Pablo
@@ -14,11 +19,49 @@ public class Factura extends javax.swing.JDialog {
     /**
      * Creates new form Factura
      */
+    DefaultTableModel tabla;
     public Factura(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
         this.setTitle("Carga de Factura");
+        tabla = (DefaultTableModel) tblFac.getModel();
+        redimencionarTabla();
+        /////ins
+        txtAci.setText("0");
+        txtFecFac.setText(Formato.FechaHoy());
+    }
+    
+    private void redimencionarTabla(){
+        TableColumnModel colum = tblFac.getColumnModel();
+        colum.getColumn(0).setMaxWidth(40);
+        colum.getColumn(0).setMinWidth(40);
+        colum.getColumn(0).setWidth(40);
+        colum.getColumn(1).setMaxWidth(100);
+        colum.getColumn(1).setMinWidth(100);
+        colum.getColumn(1).setWidth(100);
+        colum.getColumn(2).setMaxWidth(100);
+        colum.getColumn(2).setMinWidth(100);
+        colum.getColumn(2).setWidth(100);
+        colum.getColumn(3).setMaxWidth(250);
+        colum.getColumn(3).setMinWidth(250);
+        colum.getColumn(3).setWidth(250);
+        colum.getColumn(4).setMaxWidth(250);
+        colum.getColumn(4).setMinWidth(250);
+        colum.getColumn(4).setWidth(250);
+        colum.getColumn(5).setMaxWidth(80);
+        colum.getColumn(5).setMinWidth(80);
+        colum.getColumn(5).setWidth(80);
+        colum.getColumn(6).setMaxWidth(100);
+        colum.getColumn(6).setMinWidth(100);
+        colum.getColumn(6).setWidth(100);
+        colum.getColumn(7).setMaxWidth(80);
+        colum.getColumn(7).setMinWidth(80);
+        colum.getColumn(7).setWidth(80);
+        colum.getColumn(8).setMaxWidth(250);
+        colum.getColumn(8).setMinWidth(250);
+        colum.getColumn(8).setWidth(250);
+        tblFac.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     }
 
     /**
@@ -49,7 +92,7 @@ public class Factura extends javax.swing.JDialog {
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblFac = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         txtNroMic = new javax.swing.JTextField();
@@ -61,6 +104,7 @@ public class Factura extends javax.swing.JDialog {
         txtFecFac = new javax.swing.JTextField();
         txtNroSal = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
+        txtActHora = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -118,18 +162,33 @@ public class Factura extends javax.swing.JDialog {
         jLabel18.setFont(new java.awt.Font("Leelawadee UI", 1, 14)); // NOI18N
         jLabel18.setText(":");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblFac.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Facturar", "Nro Acta", "Cod Consig", "Descripcíon Consignatario", "Descripción de la mercaderia", "Días", "Monto US$", "Cotización", "Descripción de la Tarifa"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                true, false, false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblFac);
 
         jButton1.setFont(new java.awt.Font("Leelawadee UI", 1, 14)); // NOI18N
         jButton1.setText("Cancelar");
@@ -137,11 +196,18 @@ public class Factura extends javax.swing.JDialog {
         jButton2.setFont(new java.awt.Font("Leelawadee UI", 1, 14)); // NOI18N
         jButton2.setText("Facturar");
 
+        txtNroMic.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNroMicActionPerformed(evt);
+            }
+        });
         txtNroMic.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtNroMicKeyTyped(evt);
             }
         });
+
+        txtFecActa.setEditable(false);
 
         txtAci.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -160,6 +226,8 @@ public class Factura extends javax.swing.JDialog {
                 txtNroFacKeyTyped(evt);
             }
         });
+
+        txtActHora.setEditable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -202,14 +270,16 @@ public class Factura extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtFecFac, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtFecActa, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(26, 26, 26)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtFecActa, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtActHora, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
                             .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -255,7 +325,8 @@ public class Factura extends javax.swing.JDialog {
                         .addComponent(jLabel13)
                         .addComponent(jLabel16)
                         .addComponent(txtFecActa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtAci, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtAci, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtActHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -324,6 +395,16 @@ public class Factura extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_txtNroFacKeyTyped
 
+    private void txtNroMicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNroMicActionPerformed
+        if(txtNroMic.getText().isEmpty()){
+            
+        }else{
+            
+        }
+        
+        txtAci.requestFocus();
+    }//GEN-LAST:event_txtNroMicActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -388,10 +469,11 @@ public class Factura extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTable tblFac;
     private javax.swing.JTextField txtAci;
+    private javax.swing.JTextField txtActHora;
     private javax.swing.JTextField txtFecActa;
     private javax.swing.JTextField txtFecFac;
     private javax.swing.JTextField txtNroFac;

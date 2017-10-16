@@ -68,17 +68,19 @@
                               <Component id="txtFecFac" min="-2" pref="97" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel13" min="-2" pref="12" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="txtFecActa" min="-2" pref="97" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel14" min="-2" pref="12" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jTextField1" min="-2" pref="131" max="-2" attributes="0"/>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel13" min="-2" pref="12" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="txtFecActa" min="-2" pref="83" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="txtActHora" min="-2" pref="50" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel9" alignment="0" pref="97" max="32767" attributes="0"/>
                           <Component id="jLabel7" alignment="0" max="32767" attributes="0"/>
@@ -139,6 +141,7 @@
                       <Component id="jLabel16" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtFecActa" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtAci" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtActHora" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -341,14 +344,19 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="jTable1">
+        <Component class="javax.swing.JTable" name="tblFac">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="4" rowCount="4">
-                <Column editable="true" title="Title 1" type="java.lang.Object"/>
-                <Column editable="true" title="Title 2" type="java.lang.Object"/>
-                <Column editable="true" title="Title 3" type="java.lang.Object"/>
-                <Column editable="true" title="Title 4" type="java.lang.Object"/>
+              <Table columnCount="9" rowCount="4">
+                <Column editable="true" title="Facturar" type="java.lang.Boolean"/>
+                <Column editable="false" title="Nro Acta" type="java.lang.Object"/>
+                <Column editable="false" title="Cod Consig" type="java.lang.Object"/>
+                <Column editable="false" title="Descripc&#xed;on Consignatario" type="java.lang.Object"/>
+                <Column editable="false" title="Descripci&#xf3;n de la mercaderia" type="java.lang.Object"/>
+                <Column editable="false" title="D&#xed;as" type="java.lang.Object"/>
+                <Column editable="false" title="Monto US$" type="java.lang.Object"/>
+                <Column editable="false" title="Cotizaci&#xf3;n" type="java.lang.Object"/>
+                <Column editable="false" title="Descripci&#xf3;n de la Tarifa" type="java.lang.Object"/>
               </Table>
             </Property>
           </Properties>
@@ -373,10 +381,14 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtNroMic">
       <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtNroMicActionPerformed"/>
         <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtNroMicKeyTyped"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtFecActa">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtAci">
       <Events>
@@ -400,6 +412,11 @@
     <Component class="javax.swing.JTextField" name="txtNroSal">
     </Component>
     <Component class="javax.swing.JTextField" name="jTextField2">
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtActHora">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

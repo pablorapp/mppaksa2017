@@ -16,6 +16,8 @@ public class LisFacturas extends javax.swing.JFrame {
      */
     public LisFacturas() {
         initComponents();
+        setLocationRelativeTo(null);
+        this.setTitle("Lista de Facturas");
     }
 
     /**
@@ -39,7 +41,7 @@ public class LisFacturas extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         txtFecha = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Leelawadee UI", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -148,7 +150,7 @@ public class LisFacturas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+        new Factura(this,true).setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyReleased
