@@ -11,6 +11,8 @@ import controladores.MercaderiasControlador;
 import controladores.OrigenControlador;
 import controladores.TarifasControlador;
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,10 +51,26 @@ public class ActasCarga extends javax.swing.JDialog {
         setLocationRelativeTo(null);
         this.setTitle("Lista de Actas");
         redimencionarTabla();
+        final int limite  = 6;
         txtFecha.setText(Formato.FechaHoy());
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         txtHora.setText(sdf.format(date));
+        txtNroActa.addKeyListener(new KeyListener(){
+            @Override
+            public void keyTyped(KeyEvent e)
+
+            {if (txtNroActa.getText().length()== limite)
+
+                 e.consume();
+            }
+
+            public void keyPressed(KeyEvent arg0) {
+            }
+
+            public void keyReleased(KeyEvent arg0) {
+            }            
+        });
         txtNroActa.setText(ActasControlador.recUtlNroAct()+"");
         txtNroActa.requestFocus();
     }
@@ -106,7 +124,7 @@ public class ActasCarga extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        txtNroActa = new javax.swing.JTextField();
+        txtNroActa = new javax.swing.JTextField(6);
         txtHora = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtFecha = new javax.swing.JTextField();
@@ -694,17 +712,19 @@ public class ActasCarga extends javax.swing.JDialog {
                     int codtar = Integer.parseInt((String) tblDet.getValueAt(i, 7)) ;
                     int consig_id = Integer.parseInt((String) tblDet.getValueAt(i, 1)) ;
                     int codmer = Integer.parseInt((String) tblDet.getValueAt(i, 4)) ;
-                    double fob = Double.parseDouble((String) tblDet.getValueAt(i, 3));
-                    //System.out.println(tblDet.getRowCount() + "  conteo de filas");
-                    acts.add(new Actas(Acta,txtHora.getText(), txtFecha.getText(), mic,0,codcab,codtar, consig_id,codmer,"",1,0,"","",fob,txtMercaNom.getText(),"","",0,0,"1900-01-01","",0,0,0,0,"","",0,"",0,0,0,0,0,0,"",0,0,"","","","",usuario,txtFecha.getText(),txtHora.getText(),"A","",""));                                              
+                    double fob = Double.parseDouble((String) tblDet.getValueAt(i, 3));                    
+                    String descr = txtFecha.getText();
+                    String dia = descr.substring(0, 2);
+                    String mes = descr.substring(3,5);
+                    String anho = descr.substring(6, 10);
+                    String fecha = anho + "-" + mes + "-" + dia;                    
+                    
+                    acts.add(new Actas(Acta,txtHora.getText(), fecha, mic,0,codcab,codtar, consig_id,codmer,"",1,0,"","",fob,txtMercaNom.getText(),"","",0,0,"1900-01-01","",0,0,0,0,"","",0,"",0,0,0,0,0,0,"",0,0,"","","","",usuario,fecha,txtHora.getText(),"A","",""));                                              
                     String res = ActasControlador.adMerc(acts);
-                    Acta = 0;
-                    mic = 0;
-                    codcab = 0;
-                    codtar = 0;
-                    consig_id = 0;
-                    codmer = 0;
-                    fob = 0;
+                    if("".equals(res)){
+                        res = ActasControlador.modiConfig(Acta);
+                        this.dispose();
+                    }
                 }
             }
         }else{

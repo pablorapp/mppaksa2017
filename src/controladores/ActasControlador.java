@@ -48,7 +48,7 @@ public class ActasControlador {
         try {
             ResultSet rs;
             try (Statement stm = conn.con.createStatement()) {
-                rs = stm.executeQuery("SELECT case when max(ma_nro_act) is null then 1 else max(ma_nro_act)+1 end as nro FROM actas");
+                rs = stm.executeQuery("SELECT case when max(nro_acta) is null then 1 else max(nro_acta)+1 end as nro FROM config_doc");
                 if(rs.next()){
                     nro = rs.getInt("nro");
                 }
@@ -138,14 +138,76 @@ public class ActasControlador {
 
                             ps.setString(48, tar.getMa_ver_con());
                             ps.setString(49, tar.getObserva());         
-                            ps.execute();        
-                            res = "";                                         
+                                 
             }       
+                            ps.execute();        
+                            res = "";        
             
         }catch(SQLException ex){
             Logger.getLogger(ConsignatariosControlador.class.getName()).log(Level.SEVERE, null, ex);
         }
         return res;
     }       
+    
+    public static String addconfig(int acta,String fac){
+        String res = "No se pudo Registrar Configuración";
+        Conexion con = new Conexion();
+        PreparedStatement ps = null;        
+        ResultSet rs = null;
+        
+        try{
+            ps = con.con.prepareStatement("select count(*) as cant from config_doc where nro_acta = ? or nro_factura = ?");
+            ps.setInt(1, acta);
+            ps.setString(2, fac);
+            rs = ps.executeQuery();
+            if(rs.next()){
+                if(rs.getInt("cant")>0){
+                        ps = con.con.prepareStatement("UPDATE config_doc SET nro_acta=?, nro_factura=?");
+                        ps.setInt(1, acta);
+                        ps.setString(2, fac);
+                        ps.execute();
+                        res="";                
+                }else{
+                    ps = con.con.prepareStatement("INSERT INTO config_doc VALUES (?, ?)");
+                    ps.setInt(1, acta);
+                    ps.setString(2, fac);
+                    ps.execute();
+                    res="";                
+                }                   
+            }
+        
+        }catch(Exception ex){
+            Logger.getLogger(ConsignatariosControlador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return res;
+    }
+    
+    public static String modiConfig(int cng){
+
+        String res = "No se pudo Modificar Configuracion";
+        Conexion con = new Conexion();
+        PreparedStatement ps = null;
+
+        try{
+
+                ps = con.con.prepareStatement("UPDATE config_doc SET nro_acta=?  ");
+                ps.setInt(1, cng);
+                ps.execute();        
+                res = "";                               
+            
+        }catch(SQLException ex){
+            Logger.getLogger(ConsignatariosControlador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return res;
+    }        
+    
+    public static ResultSet consultaLista() throws SQLException {
+        String seleccion = "SELECT nro_acta,nro_factura from config_doc ";
+        Conexion con = new Conexion();
+        PreparedStatement ps = con.con.prepareStatement(seleccion);
+        ResultSet rs = ps.executeQuery();
+        return rs;
+    }    
     
 }
