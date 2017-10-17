@@ -9,6 +9,7 @@ import formularios.ConsignatariosList;
 import formularios.CotizacionList;
 import formularios.FeriadoList;
 import formularios.LisActas;
+import formularios.LisFacturas;
 import formularios.MercaderiasList;
 import formularios.OrigenList;
 import formularios.TarifasList;
@@ -155,6 +156,11 @@ public class menu extends javax.swing.JFrame {
         jMenu2.setText("Procesos");
 
         jMenuItem12.setText("Facturación");
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem12);
 
         jMenuBar1.add(jMenu2);
@@ -243,6 +249,10 @@ public class menu extends javax.swing.JFrame {
             Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        new LisFacturas().setVisible(true);
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
 
     /**
      * @param args the command line arguments
