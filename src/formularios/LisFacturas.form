@@ -59,6 +59,7 @@
                   </Group>
               </Group>
           </Group>
+
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -177,4 +178,5 @@
     <Component class="javax.swing.JTextField" name="txtFecha">
     </Component>
   </SubComponents>
+
 </Form>

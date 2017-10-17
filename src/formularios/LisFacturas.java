@@ -90,6 +90,7 @@ public class LisFacturas extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -144,6 +145,7 @@ public class LisFacturas extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+
         );
 
         pack();
@@ -193,6 +195,7 @@ public class LisFacturas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+
     private javax.swing.JButton imprimir;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -204,5 +207,6 @@ public class LisFacturas extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtFecha;
+
     // End of variables declaration//GEN-END:variables
 }
