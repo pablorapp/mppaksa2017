@@ -81,7 +81,7 @@ public class ActasControlador {
         ResultSet rs = null;
 
         try{
-            int cont = 0;
+            
             for (Actas tar : list) {
 
                             ps = con.con.prepareStatement("INSERT INTO public.actas(\n" +
@@ -140,9 +140,6 @@ public class ActasControlador {
                             ps.setString(49, tar.getObserva());         
                             ps.execute();        
                             res = "";                                         
-                            
-                    cont++;
-
             }       
             
         }catch(SQLException ex){
