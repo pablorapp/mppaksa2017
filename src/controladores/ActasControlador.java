@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import modelos.Actas;
@@ -78,8 +77,7 @@ public class ActasControlador {
         String res = "No se pudo Registrar Acta";
         Conexion con = new Conexion();
         PreparedStatement ps = null;
-        ResultSet rs = null;
-
+        int cont = 1;
         try{
             
             for (Actas tar : list) {
@@ -109,7 +107,7 @@ public class ActasControlador {
                             ps.setInt(20, tar.getMa_nro_fa1());
                             ps.setString(21, tar.getMa_fec_fac());
                             ps.setString(22, tar.getMa_hor_fac());
-                            ps.setInt(23, tar.getMa_numerar());
+                            ps.setInt(23, cont);
                             ps.setInt(24, tar.getMa_con_dia());
                             ps.setInt(25, tar.getMa_monto());
                             ps.setDouble(26, tar.getMa_cotisa());
@@ -138,7 +136,7 @@ public class ActasControlador {
 
                             ps.setString(48, tar.getMa_ver_con());
                             ps.setString(49, tar.getObserva());         
-                                 
+                            cont ++;     
             }       
                             ps.execute();        
                             res = "";        

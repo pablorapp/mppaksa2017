@@ -48,14 +48,20 @@ public class ActasCarga extends javax.swing.JDialog {
         codActa = codigo;
         mode = modo;
         tabla = (DefaultTableModel) tblDet.getModel();
-        setLocationRelativeTo(null);
-        this.setTitle("Lista de Actas");
+        setLocationRelativeTo(null);       
         redimencionarTabla();
         final int limite  = 6;
-        txtFecha.setText(Formato.FechaHoy());
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        txtHora.setText(sdf.format(date));
+        if("INS".equals(mode)){
+            this.setTitle("Lista de Actas");
+            txtFecha.setText(Formato.FechaHoy());
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            txtHora.setText(sdf.format(date));           
+            txtNroActa.setText(ActasControlador.recUtlNroAct()+"");
+        }else{
+            this.setTitle("Modificación de Actas");
+        }
+
         txtNroActa.addKeyListener(new KeyListener(){
             @Override
             public void keyTyped(KeyEvent e)
@@ -71,7 +77,7 @@ public class ActasCarga extends javax.swing.JDialog {
             public void keyReleased(KeyEvent arg0) {
             }            
         });
-        txtNroActa.setText(ActasControlador.recUtlNroAct()+"");
+
         txtNroActa.requestFocus();
     }
 
@@ -712,14 +718,18 @@ public class ActasCarga extends javax.swing.JDialog {
                     int codtar = Integer.parseInt((String) tblDet.getValueAt(i, 7)) ;
                     int consig_id = Integer.parseInt((String) tblDet.getValueAt(i, 1)) ;
                     int codmer = Integer.parseInt((String) tblDet.getValueAt(i, 4)) ;
-                    double fob = Double.parseDouble((String) tblDet.getValueAt(i, 3));                    
+                    //double fob = Double.parseDouble((String) tblDet.getValueAt(i, 3));         
+                    String valor = (String)tblDet.getValueAt(i, 3);
+                    String text = valor.replace(".", "");
+                    double fob= Double.parseDouble(text.replace(",", "."));                    
+                    
                     String descr = txtFecha.getText();
                     String dia = descr.substring(0, 2);
                     String mes = descr.substring(3,5);
                     String anho = descr.substring(6, 10);
                     String fecha = anho + "-" + mes + "-" + dia;                    
                     
-                    acts.add(new Actas(Acta,txtHora.getText(), fecha, mic,0,codcab,codtar, consig_id,codmer,"",1,0,"","",fob,txtMercaNom.getText(),"","",0,0,"1900-01-01","",0,0,0,0,"","",0,"",0,0,0,0,0,0,"",0,0,"","","","",usuario,fecha,txtHora.getText(),"A","",""));                                              
+                    acts.add(new Actas(Acta,txtHora.getText(), fecha, mic,0,codcab,codtar, consig_id,codmer,"",1,0,"","",fob,txtDescrip.getText(),"","",0,0,"1900-01-01","",0,0,0,0,"","",0,"",0,0,0,0,0,0,"",0,0,"","","","",usuario,fecha,txtHora.getText(),"A","",""));                                              
                     String res = ActasControlador.adMerc(acts);
                     if("".equals(res)){
                         res = ActasControlador.modiConfig(Acta);
@@ -901,6 +911,8 @@ public class ActasCarga extends javax.swing.JDialog {
             txtTarNom.setText(selTar.desc);
         }else{
             int cab = Integer.parseInt(txtCab.getText());
+            String res = TarifasControlador.RecupCodDes(cab);
+            txtCodNom.setText(res);              
             int tarifa = Integer.parseInt(txtTar.getText());
             Tarifas tar = TarifasControlador.recTar(cab, tarifa);
             if(tar!=null){
@@ -910,9 +922,12 @@ public class ActasCarga extends javax.swing.JDialog {
                 selTar.setVisible(true);
                 txtTar.setText(selTar.codigo+"");
                 txtCab.setText(selTar.cab+"");
+                cab = Integer.parseInt(txtCab.getText());
+                res = TarifasControlador.RecupCodDes(cab);
+                txtCodNom.setText(res);                  
                 txtTarNom.setText(selTar.desc);
             }
-        }
+        }  
     }//GEN-LAST:event_txtTarFocusLost
 
     private void txtMercaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMercaKeyTyped
@@ -945,7 +960,8 @@ public class ActasCarga extends javax.swing.JDialog {
         Object[] obj = {txtMic.getText(),txtConsig.getText(),txtConsigNom.getText(),txtFOB.getText(),txtMerca.getText(),txtMercaNom.getText()
                 ,txtCab.getText(),txtTar.getText(),txtTarNom.getText(),txtDescrip.getText(),txtSFac.getText()};
         tabla.addRow(obj);
-        txtMic.setText("");
+        //txtMic.setText("");
+        txtMic.requestFocus();
         txtConsig.setText("");
         txtConsigNom.setText("");
         txtFOB.setText("");
@@ -956,6 +972,7 @@ public class ActasCarga extends javax.swing.JDialog {
         txtTarNom.setText("");
         txtDescrip.setText("");
         txtSFac.setText("");
+        txtCodNom.setText("");
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btndltActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndltActionPerformed

@@ -155,6 +155,11 @@ public class LisActas extends javax.swing.JFrame {
         });
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/document_edit.png"))); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/32x32/document_search.png"))); // NOI18N
 
@@ -241,6 +246,13 @@ public class LisActas extends javax.swing.JFrame {
         tabla.setRowFilter(RowFilter.regexFilter(txtBuscar.getText().toUpperCase()));
         tblActa.setRowSorter(tabla);
     }//GEN-LAST:event_txtBuscarKeyReleased
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        modo = "UPD";
+        String cod = tblActa.getValueAt(tblActa.getSelectedRow(),0).toString();
+        int codActa = Integer.parseInt(cod);
+         new ActasCarga(this,true,modo,codActa,usuario).setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 //    /**
 //     * @param args the command line arguments

@@ -52,7 +52,7 @@ public class SelecTarifas extends javax.swing.JDialog {
         try {
             ResultSet rs = TarifasControlador.consultaLista();
             while(rs.next()){
-                Object[] obj = {rs.getInt("tt_codigo"),rs.getString("tt_cod_cab"),rs.getString("tt_abrevia")};
+                Object[] obj = {rs.getString("tt_cod_cab"),rs.getInt("tt_codigo"),rs.getString("tt_abrevia")};
                 tabla.addRow(obj);
             }
         } catch (SQLException ex) {
@@ -92,7 +92,7 @@ public class SelecTarifas extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Cod Tarifa", "Cod Cab", "Tarifa"
+                "Cod Cab", "Cod Tarifa", "Tarifa"
             }
         ) {
             boolean[] canEdit = new boolean [] {
