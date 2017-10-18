@@ -147,6 +147,40 @@ public class ActasControlador {
         return res;
     }       
     
+    
+    public static Actas recMerc(int cod){        
+        Actas res = null;
+        Conexion con = new Conexion();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try{
+            ps = con.con.prepareStatement("SELECT tm_codigo, tm_descrip, usuar_oper, to_char(fec_oper,'yyyy-MM-dd') as fec_oper, hora_oper, operacion FROM tmercaderias where  tm_codigo = "+cod+"  ");
+            rs = ps.executeQuery();        
+            if(rs.next()){
+                    //res = new Mercaderias(rs.getInt("tm_codigo"),rs.getString("tm_descrip"),rs.getString("usuar_oper"),rs.getString("fec_oper"),rs.getString("hora_oper"),rs.getString("operacion"));
+            }                    
+        }catch(Exception ex){
+            Logger.getLogger(ConsignatariosControlador.class.getName()).log(Level.SEVERE, null, ex);            
+        }        
+        return res;
+    }       
+    
+    public static ResultSet recCab(int cod){        
+        ResultSet res = null;
+        Conexion con = new Conexion();
+        PreparedStatement ps = null;
+        try{
+            ps = con.con.prepareStatement("SELECT ma_nro_act, ma_hora, ma_fec_act, ma_nro_ing FROM actas\n" +
+                                                                        "where ma_nro_act = "+cod+"\n" +
+                                                                        "group by ma_nro_act, ma_hora, ma_fec_act, ma_nro_ing");
+            res = ps.executeQuery();                     
+        }catch(SQLException ex){
+            Logger.getLogger(ConsignatariosControlador.class.getName()).log(Level.SEVERE, null, ex);            
+        }        
+        return res;
+    }       
+    
+    
     public static String addconfig(int acta,String fac){
         String res = "No se pudo Registrar Configuración";
         Conexion con = new Conexion();
@@ -207,5 +241,28 @@ public class ActasControlador {
         ResultSet rs = ps.executeQuery();
         return rs;
     }    
+    
+    public static List recudet(int cod){       
+        List res = new ArrayList<>();
+        Conexion con = new Conexion();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try{
+            ps = con.con.prepareStatement("SELECT ma_mic_dta,ma_cod_con,cnnombre,ma_val_fot,ma_cod_mer,tm_descrip,ma_cod_cab,ma_cod_tar,tt_abrevia,ma_des_mer,\n" +
+                                        " Case ma_marcar when '' then 'N' else 'S' end as marca \n" +
+                                        " FROM actas ac inner join consignatario cn on cn.consig_id = ac.ma_cod_con\n" +
+                                        " inner join tmercaderias mr on ac.ma_cod_mer = mr.tm_codigo\n" +
+                                        " inner join tarifa tr on ac.ma_cod_tar = tr.tt_codigo\n" +
+                                        " where ac.ma_mic_dta =  "+cod+" ");
+            rs = ps.executeQuery();    
+            while(rs.next()){
+                //res.add(rs.getInt("ma_mic_dta"),rs.getInt("ma_cod_con"),rs.getString("cnnombre"),rs.getDouble("ma_val_fot"),rs.getInt("ma_cod_mer"),rs.getString("tm_descrip"),rs.getInt("ma_cod_cab"),rs.getInt("ma_cod_tar"),rs.getString("tt_abrevia"),rs.getString("ma_des_mer"),rs.getString("marca"));
+                res.add(new ls(rs.getInt("ma_mic_dta"),rs.getInt("ma_cod_con"),rs.getString("cnnombre"),rs.getDouble("ma_val_fot"),rs.getInt("ma_cod_mer"),rs.getString("tm_descrip"),rs.getInt("ma_cod_cab"),rs.getInt("ma_cod_tar"),rs.getString("tt_abrevia"),rs.getString("ma_des_mer"),rs.getString("marca")));
+            }
+        }catch(SQLException ex){
+            Logger.getLogger(ConsignatariosControlador.class.getName()).log(Level.SEVERE, null, ex);            
+        }        
+        return res;        
+    }
     
 }

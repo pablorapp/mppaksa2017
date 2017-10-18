@@ -12,6 +12,8 @@ import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
@@ -238,7 +240,11 @@ public class LisActas extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         modo = "INS";
-        new ActasCarga(this,true,modo,0,usuario).setVisible(true);
+        try {
+            new ActasCarga(this,true,modo,0,usuario).setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(LisActas.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyReleased
@@ -251,7 +257,11 @@ public class LisActas extends javax.swing.JFrame {
         modo = "UPD";
         String cod = tblActa.getValueAt(tblActa.getSelectedRow(),0).toString();
         int codActa = Integer.parseInt(cod);
-         new ActasCarga(this,true,modo,codActa,usuario).setVisible(true);
+        try {
+            new ActasCarga(this,true,modo,codActa,usuario).setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(LisActas.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
 //    /**
