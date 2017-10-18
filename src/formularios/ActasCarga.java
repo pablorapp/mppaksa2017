@@ -10,6 +10,7 @@ import controladores.ConsignatariosControlador;
 import controladores.MercaderiasControlador;
 import controladores.OrigenControlador;
 import controladores.TarifasControlador;
+import controladores.ls;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -75,12 +76,16 @@ public class ActasCarga extends javax.swing.JDialog {
                     txtOriDesc.setText(ori.getOri_descri().trim());
                 }    
                 System.out.println("aca va a entrar en el result set");
-                List ls = ActasControlador.recudet(codigo);
+                List<ls> ls = ActasControlador.recudet(codigo);
                 
-                for(Object ls2 : ls){
-                    
-                }
-                //ResultSet res = ActasControlador.recudet(codActa);
+                ls.forEach((res) -> {
+                    //                    Object[] obj = {res.getInt("ma_mic_dta"),res.getInt("ma_cod_con"),res.getString("cnnombre"),res.getDouble("ma_val_fot"),res.getInt("ma_cod_mer")
+//                            ,res.getString("tm_descrip"),res.getInt("ma_cod_cab"),res.getInt("ma_cod_tar"),res.getString("tt_abrevia"),res.getString("ma_des_mer"),res.getString("marca")};
+Object[] obj = {res.getaInt(),res.getaInt0(),res.getString(),res.getaDouble(),res.getaInt1(),res.getString0(),res.getaInt2(),res.getaInt3()
+        ,res.getString1(),res.getString2(),res.getString3()};
+System.out.println(res.getString());
+tabla.addRow(obj);
+                }); //ResultSet res = ActasControlador.recudet(codActa);
 //                while(res.next()){
 //                    System.out.println("entra");
 //                    Object[] obj = {res.getInt("ma_mic_dta"),res.getInt("ma_cod_con"),res.getString("cnnombre"),res.getDouble("ma_val_fot"),res.getInt("ma_cod_mer")

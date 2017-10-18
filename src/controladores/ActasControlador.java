@@ -242,8 +242,8 @@ public class ActasControlador {
         return rs;
     }    
     
-    public static List recudet(int cod){       
-        List res = new ArrayList<>();
+    public static List<ls> recudet(int cod){       
+        List<ls> res = null;
         Conexion con = new Conexion();
         PreparedStatement ps = null;
         ResultSet rs = null;
