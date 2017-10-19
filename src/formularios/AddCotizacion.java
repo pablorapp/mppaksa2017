@@ -36,7 +36,9 @@ public class AddCotizacion extends javax.swing.JFrame {
             Cotizacion cng  = CotizacionControlador.recCtz(fec);
             txtFecha.setText(cng.getTc_fec_cot());
             txtFecha.setEnabled(false);
-            txtcot.setText(String.valueOf(cng.getTc_cot_mon()));
+            String valor = String.valueOf(cng.getTc_cot_mon());
+            String fob = valor.replace(".", ",");              
+            txtcot.setText(fob);
         }        
     }
 

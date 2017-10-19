@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import modelos.Origen;
 import modelos.Cotizacion;
 import programas.Conexion;
 
@@ -22,7 +21,7 @@ public class CotizacionControlador {
     
     
     public static ResultSet consultaLista() throws SQLException {
-        String seleccion = "SELECT  to_char(tc_fec_cot,'dd-MM-yyyy') as tc_fec_cot, tc_cot_mon, usuar_oper, fec_oper, hora_oper, operacion FROM cotizacion order by date_part('year',tc_fec_cot) desc";
+        String seleccion = "SELECT  to_char(tc_fec_cot,'dd-MM-yyyy') as tc_fec_cot, tc_cot_mon, usuar_oper, fec_oper, hora_oper, operacion FROM cotizacion order by date_part('year',tc_fec_cot) desc,date_part('month',tc_fec_cot) desc,date_part('day',tc_fec_cot) desc";
         Conexion con = new Conexion();
         PreparedStatement ps = con.con.prepareStatement(seleccion);
         ResultSet rs = ps.executeQuery();
@@ -58,7 +57,7 @@ public class CotizacionControlador {
 
         try{
 
-            ps = con.con.prepareStatement("select count(*) as cant from cotizacion where to_char(tc_fec_cot,'dd-MM-yyyy') = ?  ");
+            ps = con.con.prepareStatement("select count(*) as cant from cotizacion where to_char(tc_fec_cot,'yyyy-MM-dd') = ?  ");
             ps.setString(1, cot.getTc_fec_cot());
             rs = ps.executeQuery();
 
@@ -93,7 +92,7 @@ public class CotizacionControlador {
 
         try{
 
-                ps = con.con.prepareStatement("UPDATE cotizacion SET  tc_cot_mon=?, usuar_oper=?, fec_oper=to_date(?,'YYYY-MM-DD'), hora_oper=?, operacion=? WHERE tc_fec_cot = ? ");
+                ps = con.con.prepareStatement("UPDATE cotizacion SET  tc_cot_mon=?, usuar_oper=?, fec_oper=to_date(?,'YYYY-MM-DD'), hora_oper=?, operacion=? WHERE to_char(tc_fec_cot,'yyyy-MM-dd') = ? ");
                 ps.setDouble(1, cot.getTc_cot_mon());
                 ps.setString(2, cot.getUsuar_oper());
                 ps.setString(3, cot.getFec_oper());
@@ -119,7 +118,7 @@ public class CotizacionControlador {
         String fechaV = anho + "-" + mes + "-" + dia;              
         
         try{
-            ps = con.con.prepareStatement("delete from cotizacion where to_char(tc_fec_cot,'dd-MM-yyyy') = ? ");
+            ps = con.con.prepareStatement("delete from cotizacion where to_char(tc_fec_cot,'yyyy-MM-dd') = ? ");
             ps.setString(1, fechaV);
             ps.execute();
             res = "";
