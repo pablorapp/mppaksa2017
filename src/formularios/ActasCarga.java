@@ -10,7 +10,6 @@ import controladores.ConsignatariosControlador;
 import controladores.MercaderiasControlador;
 import controladores.OrigenControlador;
 import controladores.TarifasControlador;
-import controladores.ls;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -68,47 +67,43 @@ public class ActasCarga extends javax.swing.JDialog {
             ResultSet rs = ActasControlador.recCab(codActa);
             if(rs.next()){
                 txtNroActa.setText(String.valueOf(codActa));
-                txtFecha.setText(rs.getString("ma_fec_act"));
+                String df = rs.getString("ma_fec_act");
+                String anho = df.substring(0, 4);
+                String mes = df.substring(5,7);
+                String dia = df.substring(8, 10);
+                String fecha = dia + "/" + mes + "/" + anho;                 
+                txtFecha.setText(fecha);
                 txtHora.setText(rs.getString("ma_hora"));
                 txtOri.setText(rs.getString("ma_nro_ing"));
                 Origen ori = OrigenControlador.recOri(Integer.parseInt(txtOri.getText()));
                 if(ori!=null){
                     txtOriDesc.setText(ori.getOri_descri().trim());
                 }    
-                System.out.println("aca va a entrar en el result set");
-                List<ls> ls = ActasControlador.recudet(codigo);
-                
-                ls.forEach((res) -> {
-                    //                    Object[] obj = {res.getInt("ma_mic_dta"),res.getInt("ma_cod_con"),res.getString("cnnombre"),res.getDouble("ma_val_fot"),res.getInt("ma_cod_mer")
-//                            ,res.getString("tm_descrip"),res.getInt("ma_cod_cab"),res.getInt("ma_cod_tar"),res.getString("tt_abrevia"),res.getString("ma_des_mer"),res.getString("marca")};
-Object[] obj = {res.getaInt(),res.getaInt0(),res.getString(),res.getaDouble(),res.getaInt1(),res.getString0(),res.getaInt2(),res.getaInt3()
-        ,res.getString1(),res.getString2(),res.getString3()};
-System.out.println(res.getString());
-tabla.addRow(obj);
-                }); //ResultSet res = ActasControlador.recudet(codActa);
-//                while(res.next()){
-//                    System.out.println("entra");
-//                    Object[] obj = {res.getInt("ma_mic_dta"),res.getInt("ma_cod_con"),res.getString("cnnombre"),res.getDouble("ma_val_fot"),res.getInt("ma_cod_mer")
-//                            ,res.getString("tm_descrip"),res.getInt("ma_cod_cab"),res.getInt("ma_cod_tar"),res.getString("tt_abrevia"),res.getString("ma_des_mer"),res.getString("marca")};
-//                    System.out.println(res.getString("cnnombre"));
-//                    tabla.addRow(obj);                    
-//                }
+                List<Actas> ls = ActasControlador.recudet(codActa);
+                for(Actas res : ls) {
+                  
+                    String valor = String.valueOf(res.getMa_val_fot());
+                    String fob = valor.replace(".", ",");                    
+                    Consignatarios cons = ConsignatariosControlador.recConsig(res.getMa_cod_con());
+                    Mercaderias merca = MercaderiasControlador.recMerc(res.getMa_cod_mer());
+                    Tarifas tar = TarifasControlador.recTar(res.getMa_cod_cab(), res.getMa_cod_tar());
+                    Object[] obj = {(String.valueOf(res.getMa_mic_dta())),String.valueOf(res.getMa_cod_con())
+                            ,cons.getCnnombre().trim(),fob,String.valueOf(res.getMa_cod_mer())
+                            ,merca.getTm_descrip().trim(),String.valueOf(res.getMa_cod_cab()),String.valueOf(res.getMa_cod_tar())
+                            ,tar.getTt_abrevia().trim(),res.getMa_des_mer().trim(),res.getMa_marcar().trim()};
+                    tabla.addRow(obj);
+                } 
             }
         }
 
         txtNroActa.addKeyListener(new KeyListener(){
             @Override
-            public void keyTyped(KeyEvent e)
-
-                    
+            public void keyTyped(KeyEvent e)                    
             {if (txtNroActa.getText().length()== limite)
-
                  e.consume();
             }
-
             public void keyPressed(KeyEvent arg0) {
             }
-
             public void keyReleased(KeyEvent arg0) {
             }            
         });
@@ -147,8 +142,7 @@ tabla.addRow(obj);
         colum.getColumn(9).setMaxWidth(0);
         colum.getColumn(10).setMinWidth(0);
         colum.getColumn(10).setPreferredWidth(0);
-        colum.getColumn(10).setMaxWidth(0);
-        
+        colum.getColumn(10).setMaxWidth(0);        
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -396,7 +390,17 @@ tabla.addRow(obj);
         });
 
         txtMercaNom.setEditable(false);
+        txtMercaNom.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtMercaNomFocusGained(evt);
+            }
+        });
 
+        txtDescrip.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtDescripFocusGained(evt);
+            }
+        });
         txtDescrip.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDescripActionPerformed(evt);
@@ -748,32 +752,39 @@ tabla.addRow(obj);
                 JOptionPane.showMessageDialog(this, "Ingrese el lugar de ingreso");
                 txtOri.requestFocus();
             }else{
+                if("UPD".equals(mode)){
+                    String eli = ActasControlador.eliActa(Integer.parseInt(txtNroActa.getText()));
+//                    if("".equals(eli)){
+//                        JOptionPane.showMessageDialog(null, "Aca ya borro todo el detalle");                        
+//                    }
+                }                
                 List<Actas> acts = new ArrayList<>();
                 for(int i = 0;i<tblDet.getRowCount();i++){
                     int Acta = Integer.parseInt(txtNroActa.getText());
-                    int mic = Integer.parseInt((String) tblDet.getValueAt(i, 0)) ;
-                    int codcab = Integer.parseInt((String) tblDet.getValueAt(i, 6)) ;
-                    int codtar = Integer.parseInt((String) tblDet.getValueAt(i, 7)) ;
-                    int consig_id = Integer.parseInt((String) tblDet.getValueAt(i, 1)) ;
-                    int codmer = Integer.parseInt((String) tblDet.getValueAt(i, 4)) ;
                     int ori = Integer.parseInt(txtOri.getText());
-                    String valor = (String)tblDet.getValueAt(i, 3);
-                    String text = valor.replace(".", "");
-                    double fob= Double.parseDouble(text.replace(",", "."));                    
-                    
+                    String Desc = (String)tblDet.getValueAt(i, 9);                   
                     String descr = txtFecha.getText();
                     String dia = descr.substring(0, 2);
                     String mes = descr.substring(3,5);
                     String anho = descr.substring(6, 10);
                     String fecha = anho + "-" + mes + "-" + dia;                    
-                    
-                    acts.add(new Actas(Acta,txtHora.getText(), fecha, mic,0,codcab,codtar, consig_id,codmer,"",ori,0,"","",fob,txtDescrip.getText(),"","",0,0,"1900-01-01","",0,0,0,0,"","",0,"",0,0,0,0,0,0,"",0,0,"","","","",usuario,fecha,txtHora.getText(),"A","",""));                                              
+                    int mic = Integer.parseInt((String) tblDet.getValueAt(i, 0)) ; 
+                    int codcab = Integer.parseInt((String) tblDet.getValueAt(i, 6)) ;
+                    int codtar = Integer.parseInt((String) tblDet.getValueAt(i, 7)) ;
+                    int consig_id = Integer.parseInt((String) tblDet.getValueAt(i, 1)) ;
+                    int codmer = Integer.parseInt((String) tblDet.getValueAt(i, 4)) ;
+                    String valor = (String)tblDet.getValueAt(i, 3);
+                    String text = valor.replace(".", "");
+                    double fob= Double.parseDouble(text.replace(",", "."));                        
+                    acts.add(new Actas(Acta,txtHora.getText(), fecha, mic,0,codcab,codtar, consig_id,codmer,"",ori,0,"","",fob,Desc,"","",0,0,"1900-01-01","",0,0,0,0,"","",0,"",0,0,0,0,0,0,"",0,0,"","","","",usuario,fecha,txtHora.getText(),"A","",""));                                              
                     String res = ActasControlador.adMerc(acts);
                     if("".equals(res)){
-                        res = ActasControlador.modiConfig(Acta);
-                        this.dispose();
-                    }
-                }
+                        boolean re = ActasControlador.modiConfig(Acta);
+                        if(re){
+                            this.dispose();   
+                        }
+                    }                                    
+                }                                    
             }
         }else{
             JOptionPane.showMessageDialog(this, "Ingrese un Mic para grabar");
@@ -944,8 +955,8 @@ tabla.addRow(obj);
         if(txtTar.getText().isEmpty()||txtCab.getText().isEmpty()){
             SelecTarifas selTar = new SelecTarifas(null,true);
             selTar.setVisible(true);
-            txtTar.setText(selTar.codigo+"");
-            txtCab.setText(selTar.cab+"");
+            txtTar.setText(selTar.cab+"");
+            txtCab.setText(selTar.codigo+"");
             txtTarNom.setText(selTar.desc);
         }else{
             int cab = Integer.parseInt(txtCab.getText());
@@ -958,8 +969,8 @@ tabla.addRow(obj);
             }else{
                 SelecTarifas selTar = new SelecTarifas(null,true);
                 selTar.setVisible(true);
-                txtTar.setText(selTar.codigo+"");
-                txtCab.setText(selTar.cab+"");
+                txtTar.setText(selTar.cab+"");
+                txtCab.setText(selTar.codigo+"");
                 cab = Integer.parseInt(txtCab.getText());
                 res = TarifasControlador.RecupCodDes(cab);
                 txtCodNom.setText(res);                  
@@ -976,22 +987,22 @@ tabla.addRow(obj);
     }//GEN-LAST:event_txtMercaKeyTyped
 
     private void txtMercaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMercaFocusLost
-        if(txtMerca.getText().isEmpty()){
-            SelecMerca selMer = new SelecMerca(null,true);
-            selMer.setVisible(true);
-            txtMerca.setText(selMer.codigo+"");
-            txtMercaNom.setText(selMer.desc);
-        }else{
-            Mercaderias merca = MercaderiasControlador.recMerc(Integer.parseInt(txtMerca.getText()));
-            if(merca!=null){
-                txtMercaNom.setText(merca.getTm_descrip());
-            }else{
-                SelecMerca selMer = new SelecMerca(null,true);
-                selMer.setVisible(true);
-                txtMerca.setText(selMer.codigo+"");
-                txtMercaNom.setText(selMer.desc);
-            }
-        }
+//        if(txtMerca.getText().isEmpty()){
+//            SelecMerca selMer = new SelecMerca(null,true);
+//            selMer.setVisible(true);
+//            txtMerca.setText(selMer.codigo+"");
+//            txtMercaNom.setText(selMer.desc);
+//        }else{
+//            Mercaderias merca = MercaderiasControlador.recMerc(Integer.parseInt(txtMerca.getText()));
+//            if(merca!=null){
+//                txtMercaNom.setText(merca.getTm_descrip());
+//            }else{
+//                SelecMerca selMer = new SelecMerca(null,true);
+//                selMer.setVisible(true);
+//                txtMerca.setText(selMer.codigo+"");
+//                txtMercaNom.setText(selMer.desc);
+//            }
+//        }
     }//GEN-LAST:event_txtMercaFocusLost
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
@@ -1034,7 +1045,12 @@ tabla.addRow(obj);
             txtTarNom.setText(tblDet.getValueAt(tblDet.getSelectedRow(), 8).toString());
             txtDescrip.setText(tblDet.getValueAt(tblDet.getSelectedRow(), 9).toString());
             txtSFac.setText(tblDet.getValueAt(tblDet.getSelectedRow(), 10).toString());
+        int cab = Integer.parseInt(txtCab.getText());
+        String res = TarifasControlador.RecupCodDes(cab);
+        txtCodNom.setText(res);      
+
             tabla.removeRow(tblDet.getSelectedRow());
+        txtMic.requestFocus();            
         }else{
             JOptionPane.showMessageDialog(this, "Seleccione el registro");
         }
@@ -1045,6 +1061,44 @@ tabla.addRow(obj);
         String res = TarifasControlador.RecupCodDes(cab);
         txtCodNom.setText(res);
     }//GEN-LAST:event_txtCabFocusLost
+
+    private void txtDescripFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDescripFocusGained
+        if(txtMerca.getText().isEmpty()){
+            SelecMerca selMer = new SelecMerca(null,true);
+            selMer.setVisible(true);
+            txtMerca.setText(selMer.codigo+"");
+            txtMercaNom.setText(selMer.desc);
+        }else{
+            Mercaderias merca = MercaderiasControlador.recMerc(Integer.parseInt(txtMerca.getText()));
+            if(merca!=null){
+                txtMercaNom.setText(merca.getTm_descrip());
+            }else{
+                SelecMerca selMer = new SelecMerca(null,true);
+                selMer.setVisible(true);
+                txtMerca.setText(selMer.codigo+"");
+                txtMercaNom.setText(selMer.desc);
+            }
+        }
+    }//GEN-LAST:event_txtDescripFocusGained
+
+    private void txtMercaNomFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMercaNomFocusGained
+        if(txtMerca.getText().isEmpty()){
+            SelecMerca selMer = new SelecMerca(null,true);
+            selMer.setVisible(true);
+            txtMerca.setText(selMer.codigo+"");
+            txtMercaNom.setText(selMer.desc);
+        }else{
+            Mercaderias merca = MercaderiasControlador.recMerc(Integer.parseInt(txtMerca.getText()));
+            if(merca!=null){
+                txtMercaNom.setText(merca.getTm_descrip());
+            }else{
+                SelecMerca selMer = new SelecMerca(null,true);
+                selMer.setVisible(true);
+                txtMerca.setText(selMer.codigo+"");
+                txtMercaNom.setText(selMer.desc);
+            }
+        }      
+    }//GEN-LAST:event_txtMercaNomFocusGained
 
 //    /**
 //     * @param args the command line arguments
