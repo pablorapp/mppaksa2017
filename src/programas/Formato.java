@@ -5,6 +5,7 @@
  */
 package programas;
 
+import controladores.FeriadosControlador;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -15,6 +16,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -22,6 +25,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JOptionPane;
+import modelos.Feriados;
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -828,6 +832,49 @@ public class Formato {
         monto[1] = str.substring(corte);
         System.out.println("monto 2 " + monto[1]);
         return monto;
+    }
+    
+    public static int calcDias(String fecha1, String fecha2){
+        int dia = 0;
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            Date facha = sdf.parse(fecha1);
+            cal.setTime(facha);
+            String f = "";
+            while(!fecha2.equals(f)){
+                cal.add(Calendar.DAY_OF_MONTH, 1);
+                
+                
+                String diac;
+                String mes;
+                String ano;
+                int uno = cal.get(Calendar.DAY_OF_MONTH);
+                int dos = cal.get(Calendar.MONTH) + 1;
+                if(uno<10){
+                    diac = "0"+cal.get(Calendar.DAY_OF_MONTH);
+                }else{
+                    diac = cal.get(Calendar.DAY_OF_MONTH)+"";
+                }
+                if(dos<10){
+                    mes = "0"+(cal.get(Calendar.MONTH) + 1);
+                }else{
+                    mes = ""+(cal.get(Calendar.MONTH) + 1);
+                }
+                ano = cal.get(Calendar.YEAR)+"";
+                f = diac+"-"+mes+"-"+ano;
+                Feriados fer = FeriadosControlador.recFer(f);
+                if(fer==null){
+                    if(cal.get(Calendar.DAY_OF_WEEK)>1&&cal.get(Calendar.DAY_OF_WEEK)<7){
+                        dia++;
+                    }
+                }
+            }
+        } catch (ParseException ex) {
+            Logger.getLogger(Formato.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return dia;
+        
     }
     
 }

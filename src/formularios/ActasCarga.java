@@ -11,6 +11,10 @@ import controladores.MercaderiasControlador;
 import controladores.OrigenControlador;
 import controladores.TarifasControlador;
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,21 +43,71 @@ public class ActasCarga extends javax.swing.JDialog {
      * Creates new form ActasCarga
      */
     DefaultTableModel tabla;
-    public ActasCarga(java.awt.Frame parent, boolean modal,String modo,int codigo,String usu) {
+    public ActasCarga(java.awt.Frame parent, boolean modal,String modo,int codigo,String usu) throws SQLException {
         super(parent, modal);
         initComponents();
         usuario = usu;
         codActa = codigo;
         mode = modo;
         tabla = (DefaultTableModel) tblDet.getModel();
-        setLocationRelativeTo(null);
-        this.setTitle("Lista de Actas");
+        setLocationRelativeTo(null);       
         redimencionarTabla();
-        txtFecha.setText(Formato.FechaHoy());
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        txtHora.setText(sdf.format(date));
-        txtNroActa.setText(ActasControlador.recUtlNroAct()+"");
+        final int limite  = 6;
+        if("INS".equals(mode)){
+            this.setTitle("Lista de Actas");
+            titulo.setText("Carga de Actas");
+            txtFecha.setText(Formato.FechaHoy());
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            txtHora.setText(sdf.format(date));           
+            txtNroActa.setText(ActasControlador.recUtlNroAct()+"");
+        }else{
+            this.setTitle("Modificación de Actas");
+            titulo.setText("Modificación de Actas");
+            ResultSet rs = ActasControlador.recCab(codActa);
+            if(rs.next()){
+                txtNroActa.setText(String.valueOf(codActa));
+                String df = rs.getString("ma_fec_act");
+                String anho = df.substring(0, 4);
+                String mes = df.substring(5,7);
+                String dia = df.substring(8, 10);
+                String fecha = dia + "/" + mes + "/" + anho;                 
+                txtFecha.setText(fecha);
+                txtHora.setText(rs.getString("ma_hora"));
+                txtOri.setText(rs.getString("ma_nro_ing"));
+                Origen ori = OrigenControlador.recOri(Integer.parseInt(txtOri.getText()));
+                if(ori!=null){
+                    txtOriDesc.setText(ori.getOri_descri().trim());
+                }    
+                List<Actas> ls = ActasControlador.recudet(codActa);
+                for(Actas res : ls) {
+                  
+                    String valor = String.valueOf(res.getMa_val_fot());
+                    String fob = valor.replace(".", ",");                    
+                    Consignatarios cons = ConsignatariosControlador.recConsig(res.getMa_cod_con());
+                    Mercaderias merca = MercaderiasControlador.recMerc(res.getMa_cod_mer());
+                    Tarifas tar = TarifasControlador.recTar(res.getMa_cod_cab(), res.getMa_cod_tar());
+                    Object[] obj = {(String.valueOf(res.getMa_mic_dta())),String.valueOf(res.getMa_cod_con())
+                            ,cons.getCnnombre().trim(),fob,String.valueOf(res.getMa_cod_mer())
+                            ,merca.getTm_descrip().trim(),String.valueOf(res.getMa_cod_cab()),String.valueOf(res.getMa_cod_tar())
+                            ,tar.getTt_abrevia().trim(),res.getMa_des_mer().trim(),res.getMa_marcar().trim()};
+                    tabla.addRow(obj);
+                } 
+            }
+        }
+
+        txtNroActa.addKeyListener(new KeyListener(){
+            @Override
+            public void keyTyped(KeyEvent e)                    
+            {if (txtNroActa.getText().length()== limite)
+                 e.consume();
+            }
+            public void keyPressed(KeyEvent arg0) {
+            }
+            public void keyReleased(KeyEvent arg0) {
+            }            
+        });
+
         txtNroActa.requestFocus();
     }
 
@@ -88,8 +142,7 @@ public class ActasCarga extends javax.swing.JDialog {
         colum.getColumn(9).setMaxWidth(0);
         colum.getColumn(10).setMinWidth(0);
         colum.getColumn(10).setPreferredWidth(0);
-        colum.getColumn(10).setMaxWidth(0);
-        
+        colum.getColumn(10).setMaxWidth(0);        
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -101,7 +154,7 @@ public class ActasCarga extends javax.swing.JDialog {
     private void initComponents() {
 
         dcdFecha = new datechooser.beans.DateChooserDialog();
-        jLabel1 = new javax.swing.JLabel();
+        titulo = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -160,8 +213,7 @@ public class ActasCarga extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setSize(new java.awt.Dimension(0, 10));
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel1.setText("Carga de Actas");
+        titulo.setFont(new java.awt.Font("Leelawadee UI", 1, 18)); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel2.setText("CABECERA");
@@ -338,7 +390,17 @@ public class ActasCarga extends javax.swing.JDialog {
         });
 
         txtMercaNom.setEditable(false);
+        txtMercaNom.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtMercaNomFocusGained(evt);
+            }
+        });
 
+        txtDescrip.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtDescripFocusGained(evt);
+            }
+        });
         txtDescrip.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDescripActionPerformed(evt);
@@ -428,139 +490,143 @@ public class ActasCarga extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jSeparator1)
+                        .addGap(10, 10, 10))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(91, 91, 91)
+                                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel8)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtHora, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel5)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(47, 47, 47)
+                                        .addComponent(jLabel6)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtOri, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(70, 70, 70)
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtOriDesc))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtNroActa, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtFOB, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(txtDescrip, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtMic, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtCab, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtTar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtMerca, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtSFac, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtConsig, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtFOB, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(txtDescrip, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtMic, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtCab, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtTar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtMerca, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtSFac, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtConsig, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtTarNom, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                                    .addComponent(txtConsigNom, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                                    .addComponent(txtMercaNom, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                                    .addComponent(txtCodNom)))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtTarNom, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
-                            .addComponent(txtConsigNom, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
-                            .addComponent(txtMercaNom, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
-                            .addComponent(txtCodNom))))
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnAdd)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnMod)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btndlt)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(jSeparator1)
-                .addGap(10, 10, 10))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(91, 91, 91)
-                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel8)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtHora, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(47, 47, 47)
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtOri, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(70, 70, 70)
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtOriDesc))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
+                        .addComponent(btnMod)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNroActa, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnGrabar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCancelar)
+                        .addComponent(btndlt))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGrabar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCancelar)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel7)
                     .addComponent(txtFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtNroActa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(txtHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -569,9 +635,9 @@ public class ActasCarga extends javax.swing.JDialog {
                     .addComponent(jLabel6)
                     .addComponent(txtOri, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtOriDesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(jLabel20)
@@ -630,8 +696,8 @@ public class ActasCarga extends javax.swing.JDialog {
                     .addComponent(btnAdd)
                     .addComponent(btndlt))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelar)
                     .addComponent(btnGrabar))
@@ -686,26 +752,39 @@ public class ActasCarga extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "Ingrese el lugar de ingreso");
                 txtOri.requestFocus();
             }else{
+                if("UPD".equals(mode)){
+                    String eli = ActasControlador.eliActa(Integer.parseInt(txtNroActa.getText()));
+//                    if("".equals(eli)){
+//                        JOptionPane.showMessageDialog(null, "Aca ya borro todo el detalle");                        
+//                    }
+                }                
                 List<Actas> acts = new ArrayList<>();
                 for(int i = 0;i<tblDet.getRowCount();i++){
                     int Acta = Integer.parseInt(txtNroActa.getText());
-                    int mic = Integer.parseInt((String) tblDet.getValueAt(i, 0)) ;
+                    int ori = Integer.parseInt(txtOri.getText());
+                    String Desc = (String)tblDet.getValueAt(i, 9);                   
+                    String descr = txtFecha.getText();
+                    String dia = descr.substring(0, 2);
+                    String mes = descr.substring(3,5);
+                    String anho = descr.substring(6, 10);
+                    String fecha = anho + "-" + mes + "-" + dia;                    
+                    int mic = Integer.parseInt((String) tblDet.getValueAt(i, 0)) ; 
                     int codcab = Integer.parseInt((String) tblDet.getValueAt(i, 6)) ;
                     int codtar = Integer.parseInt((String) tblDet.getValueAt(i, 7)) ;
                     int consig_id = Integer.parseInt((String) tblDet.getValueAt(i, 1)) ;
                     int codmer = Integer.parseInt((String) tblDet.getValueAt(i, 4)) ;
-                    double fob = Double.parseDouble((String) tblDet.getValueAt(i, 3));
-                    //System.out.println(tblDet.getRowCount() + "  conteo de filas");
-                    acts.add(new Actas(Acta,txtHora.getText(), txtFecha.getText(), mic,0,codcab,codtar, consig_id,codmer,"",1,0,"","",fob,txtMercaNom.getText(),"","",0,0,"1900-01-01","",0,0,0,0,"","",0,"",0,0,0,0,0,0,"",0,0,"","","","",usuario,txtFecha.getText(),txtHora.getText(),"A","",""));                                              
+                    String valor = (String)tblDet.getValueAt(i, 3);
+                    String text = valor.replace(".", "");
+                    double fob= Double.parseDouble(text.replace(",", "."));                        
+                    acts.add(new Actas(Acta,txtHora.getText(), fecha, mic,0,codcab,codtar, consig_id,codmer,"",ori,0,"","",fob,Desc,"","",0,0,"1900-01-01","",0,0,0,0,"","",0,"",0,0,0,0,0,0,"",0,0,"","","","",usuario,fecha,txtHora.getText(),"A","",""));                                              
                     String res = ActasControlador.adMerc(acts);
-                    Acta = 0;
-                    mic = 0;
-                    codcab = 0;
-                    codtar = 0;
-                    consig_id = 0;
-                    codmer = 0;
-                    fob = 0;
-                }
+                    if("".equals(res)){
+                        boolean re = ActasControlador.modiConfig(Acta);
+                        if(re){
+                            this.dispose();   
+                        }
+                    }                                    
+                }                                    
             }
         }else{
             JOptionPane.showMessageDialog(this, "Ingrese un Mic para grabar");
@@ -876,11 +955,13 @@ public class ActasCarga extends javax.swing.JDialog {
         if(txtTar.getText().isEmpty()||txtCab.getText().isEmpty()){
             SelecTarifas selTar = new SelecTarifas(null,true);
             selTar.setVisible(true);
-            txtTar.setText(selTar.codigo+"");
-            txtCab.setText(selTar.cab+"");
+            txtTar.setText(selTar.cab+"");
+            txtCab.setText(selTar.codigo+"");
             txtTarNom.setText(selTar.desc);
         }else{
             int cab = Integer.parseInt(txtCab.getText());
+            String res = TarifasControlador.RecupCodDes(cab);
+            txtCodNom.setText(res);              
             int tarifa = Integer.parseInt(txtTar.getText());
             Tarifas tar = TarifasControlador.recTar(cab, tarifa);
             if(tar!=null){
@@ -888,11 +969,14 @@ public class ActasCarga extends javax.swing.JDialog {
             }else{
                 SelecTarifas selTar = new SelecTarifas(null,true);
                 selTar.setVisible(true);
-                txtTar.setText(selTar.codigo+"");
-                txtCab.setText(selTar.cab+"");
+                txtTar.setText(selTar.cab+"");
+                txtCab.setText(selTar.codigo+"");
+                cab = Integer.parseInt(txtCab.getText());
+                res = TarifasControlador.RecupCodDes(cab);
+                txtCodNom.setText(res);                  
                 txtTarNom.setText(selTar.desc);
             }
-        }
+        }  
     }//GEN-LAST:event_txtTarFocusLost
 
     private void txtMercaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMercaKeyTyped
@@ -903,29 +987,30 @@ public class ActasCarga extends javax.swing.JDialog {
     }//GEN-LAST:event_txtMercaKeyTyped
 
     private void txtMercaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMercaFocusLost
-        if(txtMerca.getText().isEmpty()){
-            SelecMerca selMer = new SelecMerca(null,true);
-            selMer.setVisible(true);
-            txtMerca.setText(selMer.codigo+"");
-            txtMercaNom.setText(selMer.desc);
-        }else{
-            Mercaderias merca = MercaderiasControlador.recMerc(Integer.parseInt(txtMerca.getText()));
-            if(merca!=null){
-                txtMercaNom.setText(merca.getTm_descrip());
-            }else{
-                SelecMerca selMer = new SelecMerca(null,true);
-                selMer.setVisible(true);
-                txtMerca.setText(selMer.codigo+"");
-                txtMercaNom.setText(selMer.desc);
-            }
-        }
+//        if(txtMerca.getText().isEmpty()){
+//            SelecMerca selMer = new SelecMerca(null,true);
+//            selMer.setVisible(true);
+//            txtMerca.setText(selMer.codigo+"");
+//            txtMercaNom.setText(selMer.desc);
+//        }else{
+//            Mercaderias merca = MercaderiasControlador.recMerc(Integer.parseInt(txtMerca.getText()));
+//            if(merca!=null){
+//                txtMercaNom.setText(merca.getTm_descrip());
+//            }else{
+//                SelecMerca selMer = new SelecMerca(null,true);
+//                selMer.setVisible(true);
+//                txtMerca.setText(selMer.codigo+"");
+//                txtMercaNom.setText(selMer.desc);
+//            }
+//        }
     }//GEN-LAST:event_txtMercaFocusLost
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        Object[] obj = {txtMic.getText(),txtConsig.getText(),txtConsigNom.getText(),txtFOB.getText(),txtMerca.getText(),txtMercaNom.getText()
-                ,txtCab.getText(),txtTar.getText(),txtTarNom.getText(),txtDescrip.getText(),txtSFac.getText()};
+        Object[] obj = {txtMic.getText(),txtConsig.getText(),txtConsigNom.getText(),txtFOB.getText(),txtMerca.getText()
+                ,txtMercaNom.getText(),txtCab.getText(),txtTar.getText(),txtTarNom.getText(),txtDescrip.getText(),txtSFac.getText()};
         tabla.addRow(obj);
-        txtMic.setText("");
+        //txtMic.setText("");
+        txtMic.requestFocus();
         txtConsig.setText("");
         txtConsigNom.setText("");
         txtFOB.setText("");
@@ -936,6 +1021,7 @@ public class ActasCarga extends javax.swing.JDialog {
         txtTarNom.setText("");
         txtDescrip.setText("");
         txtSFac.setText("");
+        txtCodNom.setText("");
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btndltActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndltActionPerformed
@@ -959,7 +1045,12 @@ public class ActasCarga extends javax.swing.JDialog {
             txtTarNom.setText(tblDet.getValueAt(tblDet.getSelectedRow(), 8).toString());
             txtDescrip.setText(tblDet.getValueAt(tblDet.getSelectedRow(), 9).toString());
             txtSFac.setText(tblDet.getValueAt(tblDet.getSelectedRow(), 10).toString());
+        int cab = Integer.parseInt(txtCab.getText());
+        String res = TarifasControlador.RecupCodDes(cab);
+        txtCodNom.setText(res);      
+
             tabla.removeRow(tblDet.getSelectedRow());
+        txtMic.requestFocus();            
         }else{
             JOptionPane.showMessageDialog(this, "Seleccione el registro");
         }
@@ -970,6 +1061,44 @@ public class ActasCarga extends javax.swing.JDialog {
         String res = TarifasControlador.RecupCodDes(cab);
         txtCodNom.setText(res);
     }//GEN-LAST:event_txtCabFocusLost
+
+    private void txtDescripFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDescripFocusGained
+        if(txtMerca.getText().isEmpty()){
+            SelecMerca selMer = new SelecMerca(null,true);
+            selMer.setVisible(true);
+            txtMerca.setText(selMer.codigo+"");
+            txtMercaNom.setText(selMer.desc);
+        }else{
+            Mercaderias merca = MercaderiasControlador.recMerc(Integer.parseInt(txtMerca.getText()));
+            if(merca!=null){
+                txtMercaNom.setText(merca.getTm_descrip());
+            }else{
+                SelecMerca selMer = new SelecMerca(null,true);
+                selMer.setVisible(true);
+                txtMerca.setText(selMer.codigo+"");
+                txtMercaNom.setText(selMer.desc);
+            }
+        }
+    }//GEN-LAST:event_txtDescripFocusGained
+
+    private void txtMercaNomFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMercaNomFocusGained
+        if(txtMerca.getText().isEmpty()){
+            SelecMerca selMer = new SelecMerca(null,true);
+            selMer.setVisible(true);
+            txtMerca.setText(selMer.codigo+"");
+            txtMercaNom.setText(selMer.desc);
+        }else{
+            Mercaderias merca = MercaderiasControlador.recMerc(Integer.parseInt(txtMerca.getText()));
+            if(merca!=null){
+                txtMercaNom.setText(merca.getTm_descrip());
+            }else{
+                SelecMerca selMer = new SelecMerca(null,true);
+                selMer.setVisible(true);
+                txtMerca.setText(selMer.codigo+"");
+                txtMercaNom.setText(selMer.desc);
+            }
+        }      
+    }//GEN-LAST:event_txtMercaNomFocusGained
 
 //    /**
 //     * @param args the command line arguments
@@ -1020,7 +1149,6 @@ public class ActasCarga extends javax.swing.JDialog {
     private javax.swing.JButton btnMod;
     private javax.swing.JButton btndlt;
     private datechooser.beans.DateChooserDialog dcdFecha;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -1052,6 +1180,7 @@ public class ActasCarga extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable tblDet;
+    private javax.swing.JLabel titulo;
     private javax.swing.JTextField txtCab;
     private javax.swing.JTextField txtCodNom;
     private javax.swing.JTextField txtConsig;

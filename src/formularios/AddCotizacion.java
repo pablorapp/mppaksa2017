@@ -18,6 +18,7 @@ public class AddCotizacion extends javax.swing.JFrame {
     String mode;
     String usuario;
     String fec;
+    double valCoti;
     /**
      * Creates new form AddCotizacion
      */
@@ -152,6 +153,7 @@ public class AddCotizacion extends javax.swing.JFrame {
             String fecha2 = Formato.FechaHoy2();
 
             if("INS".equals(mode)){
+                valCoti = cotd;
                 Cotizacion coti = new Cotizacion(fecha,cotd,usuario,fecha2,"00:00","M");
                 String res = CotizacionControlador.addCotiza(coti);
                 if(!res.equals("")){

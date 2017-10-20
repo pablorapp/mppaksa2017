@@ -5,10 +5,22 @@
  */
 package formularios;
 
+import controladores.ActasControlador;
+import controladores.ConsignatariosControlador;
+import controladores.CotizacionControlador;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import programas.Formato;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import modelos.Actas;
+import modelos.Consignatarios;
+import modelos.Cotizacion;
 
 /**
  *
@@ -20,16 +32,38 @@ public class Factura extends javax.swing.JDialog {
      * Creates new form Factura
      */
     DefaultTableModel tabla;
+    double valcoti= 0;
+    double valACI= 0;
     public Factura(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();
-        setLocationRelativeTo(null);
-        this.setTitle("Carga de Factura");
-        tabla = (DefaultTableModel) tblFac.getModel();
-        redimencionarTabla();
-        /////ins
-        txtAci.setText("0");
-        txtFecFac.setText(Formato.FechaHoy());
+        try {
+            initComponents();
+            setLocationRelativeTo(null);
+            this.setTitle("Carga de Factura");
+            tabla = (DefaultTableModel) tblFac.getModel();
+            redimencionarTabla();
+            /////ins
+            txtAci.setText("0");
+            txtFecFac.setText(Formato.FechaHoy3());
+//        Cotizacion coti = CotizacionControlador.recCtz(txtFecFac.getText());
+//        if(coti==null){
+//            JOptionPane.showMessageDialog(parent, "Ingrese la cotizacion del dia");
+//            AddCotizacion addcoti = new AddCotizacion(null,true,"INS",txtFecFac.getText(),"");
+//            addcoti.setVisible(true);
+//            valcoti = addcoti.valCoti;
+//        }else{
+//            valcoti = coti.getTc_cot_mon();
+//        }
+ResultSet res = ActasControlador.consultaLista();
+if(res.next()){
+    int nro = res.getInt("nro_factura")+1;
+    txtNroFac.setText(nro+"");
+}
+valcoti =4600;
+        } catch (SQLException ex) {
+            Logger.getLogger(Factura.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
     private void redimencionarTabla(){
@@ -98,13 +132,14 @@ public class Factura extends javax.swing.JDialog {
         txtNroMic = new javax.swing.JTextField();
         txtFecActa = new javax.swing.JTextField();
         txtAci = new javax.swing.JTextField();
-        txtTransferir = new javax.swing.JTextField();
+        txtTransConsNom = new javax.swing.JTextField();
         txtNroFac = new javax.swing.JTextField();
-        jTextField1 = new javax.swing.JTextField();
         txtFecFac = new javax.swing.JTextField();
         txtNroSal = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
         txtActHora = new javax.swing.JTextField();
+        cmbPago = new javax.swing.JComboBox<>();
+        txtTransCons = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -121,7 +156,7 @@ public class Factura extends javax.swing.JDialog {
         jLabel4.setText("Fecha de Acta");
 
         jLabel5.setFont(new java.awt.Font("Leelawadee UI", 1, 14)); // NOI18N
-        jLabel5.setText("Nombre");
+        jLabel5.setText("Forma de Pago");
 
         jLabel6.setFont(new java.awt.Font("Leelawadee UI", 1, 14)); // NOI18N
         jLabel6.setText("Fecha de Fact.");
@@ -164,10 +199,7 @@ public class Factura extends javax.swing.JDialog {
 
         tblFac.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "Facturar", "Nro Acta", "Cod Consig", "Descripcíon Consignatario", "Descripción de la mercaderia", "Días", "Monto US$", "Cotización", "Descripción de la Tarifa"
@@ -192,10 +224,20 @@ public class Factura extends javax.swing.JDialog {
 
         jButton1.setFont(new java.awt.Font("Leelawadee UI", 1, 14)); // NOI18N
         jButton1.setText("Cancelar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setFont(new java.awt.Font("Leelawadee UI", 1, 14)); // NOI18N
         jButton2.setText("Facturar");
 
+        txtNroMic.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtNroMicFocusLost(evt);
+            }
+        });
         txtNroMic.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtNroMicActionPerformed(evt);
@@ -209,25 +251,67 @@ public class Factura extends javax.swing.JDialog {
 
         txtFecActa.setEditable(false);
 
+        txtAci.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtAciFocusLost(evt);
+            }
+        });
+        txtAci.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtAciActionPerformed(evt);
+            }
+        });
         txtAci.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtAciKeyTyped(evt);
             }
         });
 
-        txtTransferir.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtTransConsNom.setEditable(false);
+        txtTransConsNom.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtTransferirKeyTyped(evt);
+                txtTransConsNomKeyTyped(evt);
             }
         });
 
+        txtNroFac.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNroFacActionPerformed(evt);
+            }
+        });
         txtNroFac.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtNroFacKeyTyped(evt);
             }
         });
 
+        txtFecFac.setEditable(false);
+
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+
         txtActHora.setEditable(false);
+
+        cmbPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Contado", "Crédito" }));
+
+        txtTransCons.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtTransConsFocusLost(evt);
+            }
+        });
+        txtTransCons.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTransConsActionPerformed(evt);
+            }
+        });
+        txtTransCons.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTransConsKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -243,25 +327,28 @@ public class Factura extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtNroFac))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtNroFac))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtNroMic, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtTransferir))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtTransCons, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtNroMic, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(62, 62, 62)
+                                .addComponent(txtTransConsNom, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -270,18 +357,19 @@ public class Factura extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtFecFac, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtFecActa, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtActHora, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(txtFecActa, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtActHora, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(cmbPago, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -332,7 +420,8 @@ public class Factura extends javax.swing.JDialog {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
                         .addComponent(jLabel11)
-                        .addComponent(txtTransferir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtTransConsNom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtTransCons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel5)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -340,7 +429,7 @@ public class Factura extends javax.swing.JDialog {
                         .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel14)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cmbPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -381,12 +470,12 @@ public class Factura extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_txtAciKeyTyped
 
-    private void txtTransferirKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTransferirKeyTyped
+    private void txtTransConsNomKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTransConsNomKeyTyped
         if(Character.isLetter(evt.getKeyChar())){
             evt.consume();
             getToolkit().beep();
         }
-    }//GEN-LAST:event_txtTransferirKeyTyped
+    }//GEN-LAST:event_txtTransConsNomKeyTyped
 
     private void txtNroFacKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNroFacKeyTyped
         if(Character.isLetter(evt.getKeyChar())){
@@ -396,14 +485,111 @@ public class Factura extends javax.swing.JDialog {
     }//GEN-LAST:event_txtNroFacKeyTyped
 
     private void txtNroMicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNroMicActionPerformed
-        if(txtNroMic.getText().isEmpty()){
-            
-        }else{
-            
-        }
+        
         
         txtAci.requestFocus();
     }//GEN-LAST:event_txtNroMicActionPerformed
+
+    private void txtTransConsKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTransConsKeyTyped
+        if(Character.isLetter(evt.getKeyChar())){
+            evt.consume();
+            getToolkit().beep();
+        }
+    }//GEN-LAST:event_txtTransConsKeyTyped
+
+    private void txtTransConsFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTransConsFocusLost
+        if(!txtTransCons.getText().isEmpty()){
+            Consignatarios cons = ConsignatariosControlador.recConsig(Integer.parseInt(txtTransCons.getText()));
+            if(cons!=null){
+                txtTransConsNom.setText(cons.getCnnombre().trim());
+            }else{
+                SelecConsignatario selCons = new SelecConsignatario(null,true);
+                selCons.setVisible(true);
+                txtTransCons.setText(selCons.codigo+"");
+                txtTransConsNom.setText(selCons.desc);
+            }
+        }
+    }//GEN-LAST:event_txtTransConsFocusLost
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtAciFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtAciFocusLost
+        if(!txtAci.getText().equals("0")){
+            addACI acadd = new addACI(null,true,this.valACI);
+            acadd.setVisible(true);
+            this.valACI = acadd.importe;
+        }
+    }//GEN-LAST:event_txtAciFocusLost
+
+    private void txtAciActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAciActionPerformed
+        txtTransCons.requestFocus();
+    }//GEN-LAST:event_txtAciActionPerformed
+
+    private void txtTransConsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTransConsActionPerformed
+        jTextField2.requestFocus();
+    }//GEN-LAST:event_txtTransConsActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        txtNroFac.requestFocus();
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void txtNroFacActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNroFacActionPerformed
+        txtNroSal.requestFocus();
+    }//GEN-LAST:event_txtNroFacActionPerformed
+
+    private void txtNroMicFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNroMicFocusLost
+        if(txtNroMic.getText().isEmpty()){
+            try {
+                SelecActas selAct = new SelecActas(null,true);
+                selAct.setVisible(true);
+                txtNroMic.setText(selAct.mic+"");
+                txtFecActa.setText(selAct.fec);
+                txtActHora.setText(selAct.hour);
+                int dia = Formato.calcDias(txtFecActa.getText(), txtFecFac.getText());
+                List<Actas> actas = ActasControlador.recudetPorMic(selAct.mic);
+                for(Actas acta : actas){
+                    boolean fac = acta.getMa_marcar().equals("X");
+                    Object obj[] = {fac,acta.getMa_nro_act(),acta.getMa_cod_con(), acta.getMa_des_con(),acta.getMa_des_mer(),dia,acta.getMa_val_fot(),valcoti,acta.getMa_des_tar()};
+                    tabla.addRow(obj);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Factura.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            try {
+                ResultSet rs = ActasControlador.recMIC(Integer.parseInt(txtNroMic.getText()));
+                if(rs.next()){
+                    txtFecActa.setText(rs.getString("ma_fec_act"));
+                    txtActHora.setText(rs.getString("ma_hora"));
+                    int dia = Formato.calcDias(txtFecActa.getText(), txtFecFac.getText());
+                    List<Actas> actas = ActasControlador.recudetPorMic(Integer.parseInt(txtNroMic.getText()));
+                    for(Actas acta : actas){
+                        boolean fac = acta.getMa_marcar().equals("X");
+                        Object obj[] = {fac,acta.getMa_nro_act(),acta.getMa_cod_con(), acta.getMa_des_con(),acta.getMa_des_mer(),dia,acta.getMa_val_fot(),valcoti,acta.getMa_des_tar()};
+                        tabla.addRow(obj);
+                    }
+                }else{
+                    SelecActas selAct = new SelecActas(null,true);
+                    selAct.setVisible(true);
+                    txtNroMic.setText(selAct.mic+"");
+                    txtFecActa.setText(selAct.fec);
+                    txtActHora.setText(selAct.hour);
+                    int dia = Formato.calcDias(txtFecActa.getText(), txtFecFac.getText());
+                    List<Actas> actas = ActasControlador.recudetPorMic(selAct.mic);
+                    for(Actas acta : actas){
+                        boolean fac = acta.getMa_marcar().equals("X");
+                        Object obj[] = {fac,acta.getMa_nro_act(),acta.getMa_cod_con(), acta.getMa_des_con(),acta.getMa_des_mer(),dia,acta.getMa_val_fot(),valcoti,acta.getMa_des_tar()};
+                        tabla.addRow(obj);
+                    }
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Factura.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }//GEN-LAST:event_txtNroMicFocusLost
 
     /**
      * @param args the command line arguments
@@ -448,6 +634,7 @@ public class Factura extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cmbPago;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -469,7 +656,6 @@ public class Factura extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTable tblFac;
     private javax.swing.JTextField txtAci;
@@ -479,6 +665,7 @@ public class Factura extends javax.swing.JDialog {
     private javax.swing.JTextField txtNroFac;
     private javax.swing.JTextField txtNroMic;
     private javax.swing.JTextField txtNroSal;
-    private javax.swing.JTextField txtTransferir;
+    private javax.swing.JTextField txtTransCons;
+    private javax.swing.JTextField txtTransConsNom;
     // End of variables declaration//GEN-END:variables
 }
